@@ -490,47 +490,59 @@ test('MANTA-980 - null etag support', function (t) {
 });
 
 
-//test('find (like marlin)', function (t) {
-    //var b = this.bucket;
-    //var c = this.client;
-    //var k = uuid.v4();
-    //var v = {
-        //str: 'hello',
-        //str_2: 'world'
-    //};
-    //var found = false;
+test('find (like marlin)', function (t) {
+    var b = this.bucket;
+    var c = this.client;
+    var k = uuid.v4();
+    var v = {
+        str: 'hello',
+        str_2: 'world'
+    };
+    var found = false;
 
-    //vasync.pipeline({
-        //funcs: [ function put(_, cb) {
-            //c.putObject(b, k, v, cb);
-        //}, function find(_, cb) {
-            //var f = '(&(str=hello)(!(str_2=usa)))';
-            //var req = c.findObjects(b, f);
-            //req.once('error', cb);
-            //req.once('end', cb);
-            //req.once('record', function (obj) {
-                //t.ok(obj);
-                //if (!obj)
-                    //return (undefined);
+    vasync.pipeline({
+        funcs: [ function put(_, cb) {
+            c.putObject(b, k, v, cb);
+        }, function getTokens(_, cb) {
+            c.getTokens(function(err, tokens) {
+                _.tokens = tokens;
+                return cb(err);
+            });
+        }, function find(_, cb) {
+            var f = '(&(str=hello)(!(str_2=usa)))';
+            var count = 0;
+            _.tokens.forEach(function(token) {
+                var req = c.findObjects(b, f);
+                req.once('error', cb);
+                req.once('end', function() {
+                    if (++count === _.tokens.length) {
+                        return cb();
+                    }
+                });
+                req.once('record', function (obj) {
+                    t.ok(obj);
+                    if (!obj)
+                        return (undefined);
 
-                //t.equal(obj.bucket, b);
-                //t.equal(obj.key, k);
-                //t.deepEqual(obj.value, v);
-                //t.ok(obj._id);
-                //t.ok(obj._count);
-                //t.ok(obj._etag);
-                //t.ok(obj._mtime);
-                //found = true;
-                //return (undefined);
-            //});
-        //} ],
-        //arg: {}
-    //}, function (err) {
-        //t.ifError(err);
-        //t.ok(found);
-        //t.end();
-    //});
-//});
+                    t.equal(obj.bucket, b);
+                    t.equal(obj.key, k);
+                    t.deepEqual(obj.value, v);
+                    t.ok(obj._id);
+                    t.ok(obj._count);
+                    t.ok(obj._etag);
+                    t.ok(obj._mtime);
+                    found = true;
+                    return (undefined);
+                });
+            });
+        } ],
+        arg: {}
+    }, function (err) {
+        t.ifError(err);
+        t.ok(found);
+        t.end();
+    });
+});
 
 
 //test('find _mtime', function (t) {
