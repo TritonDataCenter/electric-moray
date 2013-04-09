@@ -18,6 +18,10 @@
 # Tools
 #
 TAP		:= ./node_modules/.bin/tap
+NODEUNIT	:= ./node_modules/.bin/nodeunit
+NODECOVER	:= ./node_modules/.bin/cover
+BUNYAN		:= ./node_modules/.bin/bunyan
+JSONTOOL	:= ./node_modules/.bin/json
 
 #
 # Files
@@ -47,6 +51,14 @@ endif
 include ./tools/mk/Makefile.smf.defs
 
 #
+# MG Variables
+#
+
+RELEASE_TARBALL         := moray-pkg-$(STAMP).tar.bz2
+ROOT                    := $(shell pwd)
+TMPDIR                  := /tmp/$(STAMP)
+
+#
 # Repo-specific targets
 #
 .PHONY: all
@@ -59,8 +71,28 @@ $(TAP): | $(NPM_EXEC)
 CLEAN_FILES += $(TAP) ./node_modules/tap
 
 .PHONY: test
-test: $(TAP)
-	TAP=1 $(TAP) test/*.test.js
+test: $(NODEUNIT)
+	$(NODEUNIT) test/buckets.test.js | $(BUNYAN)
+	$(NODEUNIT) test/objects.test.js | $(BUNYAN)
+	$(NODEUNIT) test/integ.test.js | $(BUNYAN)
+
+.PHONY: release
+release: all docs $(SMF_MANIFESTS)
+	@echo "Building $(RELEASE_TARBALL)"
+	@mkdir -p $(TMPDIR)/root/opt/smartdc/electric-moray
+	@mkdir -p $(TMPDIR)/root
+	@mkdir -p $(TMPDIR)/root/opt/smartdc/electric-moray/etc
+	cp -r $(ROOT)/build \
+		$(ROOT)/lib \
+		$(ROOT)/main.js \
+		$(ROOT)/node_modules \
+		$(ROOT)/package.json \
+		$(ROOT)/smf \
+		$(TMPDIR)/root/opt/smartdc/electric-moray/
+	cp $(ROOT)/etc/config.json.in $(TMPDIR)/root/opt/smartdc/electric-moray/etc
+	cp $(ROOT)/etc/haproxy.cfg.in $(TMPDIR)/root/opt/smartdc/electric-moray/etc
+	(cd $(TMPDIR) && $(TAR) -jcf $(ROOT)/$(RELEASE_TARBALL) root)
+	@rm -rf $(TMPDIR)
 
 include ./tools/mk/Makefile.deps
 ifeq ($(shell uname -s),SunOS)
