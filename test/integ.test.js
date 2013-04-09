@@ -106,7 +106,7 @@ test('MANTA-328 numeric values in filters', function (t) {
                         t.ifError(err2);
                         var ok = false;
                         var f = '(num=123)';
-                        var req = c.findObjects(b, f);
+                        var req = c.findObjects(b, f, {hashkey: k});
                         req.once('error', function (err) {
                                 t.ifError(err);
                                 t.end();
@@ -151,7 +151,7 @@ test('MANTA-328 numeric values in filters <=', function (t) {
                         t.ifError(err2);
                         var ok = false;
                         var f = '(num<=1024)';
-                        var req = c.findObjects(b, f);
+                        var req = c.findObjects(b, f, {hashkey: k});
                         req.once('error', function (err) {
                                 t.ifError(err);
                                 t.end();
@@ -196,7 +196,7 @@ test('MANTA-328 numeric values in filters >=', function (t) {
                         t.ifError(err2);
                         var ok = false;
                         var f = '(num>=81)';
-                        var req = c.findObjects(b, f);
+                        var req = c.findObjects(b, f, {hashkey: k});
                         req.once('error', function (err) {
                                 t.ifError(err);
                                 t.end();
@@ -240,7 +240,7 @@ test('MANTA-170 bogus filter', function (t) {
                 c.putObject(b, k, data, function (err2) {
                         t.ifError(err2);
                         var f = '(num>81)';
-                        var req = c.findObjects(b, f);
+                        var req = c.findObjects(b, f, {hashkey: k});
                         req.once('error', function (err) {
                                 t.end();
                         });
@@ -273,7 +273,7 @@ test('MANTA-680 boolean searches', function (t) {
                 c.putObject(b, k, data, function (err2) {
                         t.ifError(err2);
                         var f = '(b=true)';
-                        var req = c.findObjects(b, f);
+                        var req = c.findObjects(b, f, {hashkey: k});
                         var ok = false;
                         req.once('record', function () {
                                 ok = true;

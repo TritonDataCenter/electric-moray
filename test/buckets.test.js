@@ -238,9 +238,9 @@ test('update bucket (versioned not ok 1 -> 0)', function (t) {
                 t.equal(err2.name, 'VError');
                 t.ok(err2.message);
                 t.ok(err2.ase_errors.length >= 1);
-                err2.ase_errors.forEach(function(err) {
-                    t.equal(err.name, 'BucketVersionError');
-                    t.ok(err.message);
+                err2.ase_errors.forEach(function(err3) {
+                    t.equal(err3.name, 'BucketVersionError');
+                    t.ok(err3.message);
                 });
             }
             t.end();
@@ -275,9 +275,9 @@ test('update bucket (versioned not ok 2 -> 1)', function (t) {
                 t.equal(err2.name, 'VError');
                 t.ok(err2.message);
                 t.ok(err2.ase_errors.length >= 1);
-                err2.ase_errors.forEach(function(err) {
-                    t.equal(err.name, 'BucketVersionError');
-                    t.ok(err.message);
+                err2.ase_errors.forEach(function(err3) {
+                    t.equal(err3.name, 'BucketVersionError');
+                    t.ok(err3.message);
                 });
             }
             t.end();
@@ -294,9 +294,9 @@ test('create bucket bad index type', function (t) {
         t.equal(err.name, 'VError');
         t.ok(err.message);
         t.ok(err.ase_errors.length >= 1);
-        err.ase_errors.forEach(function(err) {
-            t.equal(err.name, 'InvalidBucketConfigError');
-            t.ok(err.message);
+        err.ase_errors.forEach(function(err2) {
+            t.equal(err2.name, 'InvalidBucketConfigError');
+            t.ok(err2.message);
         });
         t.end();
     });
@@ -311,9 +311,9 @@ test('create bucket triggers not function', function (t) {
         t.equal(err.name, 'VError');
         t.ok(err.message);
         t.ok(err.ase_errors.length >= 1);
-        err.ase_errors.forEach(function(err) {
-            t.equal(err.name, 'NotFunctionError');
-            t.ok(err.message);
+        err.ase_errors.forEach(function(err2) {
+            t.equal(err2.name, 'NotFunctionError');
+            t.ok(err2.message);
         });
         t.end();
     });

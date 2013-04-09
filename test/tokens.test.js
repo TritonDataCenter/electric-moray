@@ -40,7 +40,6 @@ function assertObject(b, t, obj, k, v) {
 ///--- Tests
 
 before(function (cb) {
-    var self = this;
     //this.bucket = 'moray_unit_test_' + uuid.v4().substr(0, 7);
     this.bucket = 'manta';
     this.assertObject = assertObject.bind(this, this.bucket);
@@ -60,7 +59,6 @@ after(function (cb) {
 
 test('get tokens', function (t) {
     var c = this.client;
-    var self = this;
 
     c.getTokens(function(err, tokens) {
         t.ok(tokens);

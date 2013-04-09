@@ -84,7 +84,6 @@ function assertObject(b, t, obj, k, v) {
 
 before(function (cb) {
     var self = this;
-    //this.bucket = 'moray_unit_test_' + uuid.v4().substr(0, 7);
     this.bucket = 'manta';
     this.assertObject = assertObject.bind(this, this.bucket);
     this.client = helper.createClient();
@@ -504,20 +503,21 @@ test('find (like marlin)', function (t) {
         funcs: [ function put(_, cb) {
             c.putObject(b, k, v, cb);
         }, function getTokens(_, cb) {
-            c.getTokens(function(err, tokens) {
-                _.tokens = tokens;
+            c.getTokens(function(err, res) {
+                _.tokens = res.tokens;
                 return cb(err);
             });
         }, function find(_, cb) {
             var f = '(&(str=hello)(!(str_2=usa)))';
             var count = 0;
             _.tokens.forEach(function(token) {
-                var req = c.findObjects(b, f);
+                var req = c.findObjects(b, f, {token: token});
                 req.once('error', cb);
                 req.once('end', function() {
                     if (++count === _.tokens.length) {
                         return cb();
                     }
+                    return (undefined);
                 });
                 req.once('record', function (obj) {
                     t.ok(obj);
@@ -545,137 +545,220 @@ test('find (like marlin)', function (t) {
 });
 
 
-//test('find _mtime', function (t) {
-    //var b = this.bucket;
-    //var c = this.client;
-    //var k = uuid.v4();
-    //var now = Date.now();
-    //var v = {
-        //str: 'hello',
-        //str_2: 'world'
-    //};
-    //var found = false;
+test('find _mtime', function (t) {
+    var b = this.bucket;
+    var c = this.client;
+    var k = uuid.v4();
+    var now = Date.now();
+    var v = {
+        str: 'hello',
+        str_2: 'world'
+    };
+    var found = false;
 
-    //vasync.pipeline({
-        //funcs: [ function wait(_, cb) {
-            //setTimeout(cb, 500);
-        //}, function put(_, cb) {
-            //c.putObject(b, k, v, cb);
-        //}, function find(_, cb) {
-            //var f = '(_mtime>=' + now + ')';
-            //var req = c.findObjects(b, f);
-            //req.once('error', cb);
-            //req.once('end', cb);
-            //req.once('record', function (obj) {
-                //t.ok(obj);
-                //if (!obj)
-                    //return (undefined);
+    vasync.pipeline({
+        funcs: [ function wait(_, cb) {
+            setTimeout(cb, 500);
+        }, function put(_, cb) {
+            c.putObject(b, k, v, cb);
+        }, function getTokens(_, cb) {
+            c.getTokens(function(err, res) {
+                _.tokens = res.tokens;
+                return cb(err);
+            });
+        }, function find(_, cb) {
+            var f = '(_mtime>=' + now + ')';
+            var count = 0;
+            _.tokens.forEach(function(token) {
+                var req = c.findObjects(b, f, {token: token});
+                req.once('error', cb);
+                req.once('end', function() {
+                    if (++count === _.tokens.length) {
+                        return cb();
+                    }
+                    return (undefined);
+                });
+                req.once('record', function (obj) {
+                    t.ok(obj);
+                    if (!obj)
+                        return (undefined);
 
-                //t.equal(obj.bucket, b);
-                //t.equal(obj.key, k);
-                //t.deepEqual(obj.value, v);
-                //t.ok(obj._id);
-                //t.ok(obj._etag);
-                //t.ok(obj._mtime);
-                //found = true;
-                //return (undefined);
-            //});
-        //} ],
-        //arg: {}
-    //}, function (err) {
-        //t.ifError(err);
-        //t.ok(found);
-        //t.end();
-    //});
-//});
-
-
-//test('find MANTA-156', function (t) {
-    //var b = this.bucket;
-    //var c = this.client;
-    //var k = uuid.v4();
-    //var v = {
-        //num: 0,
-        //num_u: 1
-    //};
-    //var found = false;
-
-    //vasync.pipeline({
-        //funcs: [ function wait(_, cb) {
-            //setTimeout(cb, 500);
-        //}, function put(_, cb) {
-            //c.putObject(b, k, v, cb);
-        //}, function find(_, cb) {
-            //var f = '(num>=0)';
-            //var req = c.findObjects(b, f);
-            //req.once('error', cb);
-            //req.once('end', cb);
-            //req.once('record', function (obj) {
-                //t.ok(obj);
-                //if (!obj)
-                    //return (undefined);
-
-                //t.equal(obj.bucket, b);
-                //t.equal(obj.key, k);
-                //t.deepEqual(obj.value, v);
-                //t.ok(obj._id);
-                //t.ok(obj._etag);
-                //t.ok(obj._mtime);
-                //found = true;
-                //return (undefined);
-            //});
-        //} ],
-        //arg: {}
-    //}, function (err) {
-        //t.ifError(err);
-        //t.ok(found);
-        //t.end();
-    //});
-//});
+                    t.equal(obj.bucket, b);
+                    t.equal(obj.key, k);
+                    t.deepEqual(obj.value, v);
+                    t.ok(obj._id);
+                    t.ok(obj._etag);
+                    t.ok(obj._mtime);
+                    found = true;
+                    return (undefined);
+                });
+            });
+        } ],
+        arg: {}
+    }, function (err) {
+        t.ifError(err);
+        t.ok(found);
+        t.end();
+    });
+});
 
 
-//test('non-indexed AND searches (MANTA-317)', function (t) {
-    //var b = this.bucket;
-    //var c = this.client;
-    //var k = uuid.v4();
-    //var v = {
-        //str: 'hello',
-        //cow: 'moo'
-    //};
-    //var found = false;
+test('find MANTA-156', function (t) {
+    var b = this.bucket;
+    var c = this.client;
+    var k = uuid.v4();
+    var v = {
+        num: 0,
+        num_u: 1
+    };
+    var found = false;
 
-    //vasync.pipeline({
-        //funcs: [ function wait(_, cb) {
-            //setTimeout(cb, 500);
-        //}, function put(_, cb) {
-            //c.putObject(b, k, v, cb);
-        //}, function find(_, cb) {
-            //var f = '(&(str=hello)(!(cow=woof)))';
-            //var req = c.findObjects(b, f);
-            //req.once('error', cb);
-            //req.once('end', cb);
-            //req.once('record', function (obj) {
-                //t.ok(obj);
-                //if (!obj)
-                    //return (undefined);
+    vasync.pipeline({
+        funcs: [ function wait(_, cb) {
+            setTimeout(cb, 500);
+        }, function put(_, cb) {
+            c.putObject(b, k, v, cb);
+        }, function getTokens(_, cb) {
+            c.getTokens(function(err, res) {
+                _.tokens = res.tokens;
+                return cb(err);
+            });
+        }, function find(_, cb) {
+            var f = '(num>=0)';
+            var count = 0;
+            _.tokens.forEach(function(token) {
+                var req = c.findObjects(b, f, {token: token});
+                req.once('error', cb);
+                req.once('end', function() {
+                    if (++count === _.tokens.length) {
+                        return cb();
+                    }
+                    return (undefined);
+                });
+                req.once('record', function (obj) {
+                    t.ok(obj);
+                    if (!obj)
+                        return (undefined);
 
-                //t.equal(obj.bucket, b);
-                //t.equal(obj.key, k);
-                //t.deepEqual(obj.value, v);
-                //t.ok(obj._id);
-                //t.ok(obj._etag);
-                //t.ok(obj._mtime);
-                //found = true;
-                //return (undefined);
-            //});
-        //} ],
-        //arg: {}
-    //}, function (err) {
-        //t.ifError(err);
-        //t.ok(found);
-        //t.end();
-    //});
-//});
+                    t.equal(obj.bucket, b);
+                    t.equal(obj.key, k);
+                    t.deepEqual(obj.value, v);
+                    t.ok(obj._id);
+                    t.ok(obj._etag);
+                    t.ok(obj._mtime);
+                    found = true;
+                    return (undefined);
+                });
+            });
+        } ],
+        arg: {}
+    }, function (err) {
+        t.ifError(err);
+        t.ok(found);
+        t.end();
+    });
+});
+
+
+test('find with hashkey', function(t) {
+    var b = this.bucket;
+    var c = this.client;
+    var dir = '/' + uuid.v4();
+    var k = dir + '/' + uuid.v4();
+    var v = {
+        num: 0,
+        num_u: 1
+    };
+    var found = false;
+
+    vasync.pipeline({
+        funcs: [ function wait(_, cb) {
+            setTimeout(cb, 500);
+        }, function put(_, cb) {
+            c.putObject(b, k, v, cb);
+        }, function find(_, cb) {
+            var f = '(num>=0)';
+            var req = c.findObjects(b, f, {hashkey: dir});
+            req.once('error', cb);
+            req.once('end', cb);
+            req.once('record', function (obj) {
+                t.ok(obj);
+                if (!obj)
+                    return (undefined);
+
+                t.equal(obj.bucket, b);
+                t.equal(obj.key, k);
+                t.deepEqual(obj.value, v);
+                t.ok(obj._id);
+                t.ok(obj._etag);
+                t.ok(obj._mtime);
+                found = true;
+                return (undefined);
+            });
+        } ],
+        arg: {}
+    }, function (err) {
+        t.ifError(err);
+        t.ok(found);
+        t.end();
+    });
+});
+
+test('non-indexed AND searches (MANTA-317)', function (t) {
+    var b = this.bucket;
+    var c = this.client;
+    var k = uuid.v4();
+    var v = {
+        str: 'hello',
+        cow: 'moo'
+    };
+    var found = false;
+
+    vasync.pipeline({
+        funcs: [ function wait(_, cb) {
+            setTimeout(cb, 500);
+        }, function put(_, cb) {
+            c.putObject(b, k, v, cb);
+        }, function getTokens(_, cb) {
+            c.getTokens(function(err, res) {
+                _.tokens = res.tokens;
+                return cb(err);
+            });
+        }, function find(_, cb) {
+            var f = '(&(str=hello)(!(cow=woof)))';
+            var count = 0;
+            _.tokens.forEach(function(token) {
+                var req = c.findObjects(b, f, {token: token});
+                req.once('error', cb);
+                req.once('end', function() {
+                    if (++count === _.tokens.length) {
+                        return cb();
+                    }
+                    return (undefined);
+                });
+                req.once('record', function (obj) {
+                    t.ok(obj);
+                    if (!obj)
+                        return (undefined);
+
+                    t.equal(obj.bucket, b);
+                    t.equal(obj.key, k);
+                    t.deepEqual(obj.value, v);
+                    t.ok(obj._id);
+                    t.ok(obj._etag);
+                    t.ok(obj._mtime);
+                    found = true;
+                    return (undefined);
+                });
+            });
+        } ],
+        arg: {}
+    }, function (err) {
+        t.ifError(err);
+        t.ok(found);
+        t.end();
+    });
+});
 
 
 test('_txn_snap on update', function (t) {
@@ -728,49 +811,62 @@ test('_txn_snap on update', function (t) {
 });
 
 
-//test('find _txn_snap', function (t) {
-    //var b = this.bucket;
-    //var c = this.client;
-    //var k = uuid.v4();
-    //var v = {
-        //str: 'hello',
-        //str_2: 'world'
-    //};
-    //var found = false;
+test('find _txn_snap', function (t) {
+    var b = this.bucket;
+    var c = this.client;
+    var k = uuid.v4();
+    var v = {
+        str: 'hello',
+        str_2: 'world'
+    };
+    var found = false;
 
-    //vasync.pipeline({
-        //funcs: [ function wait(_, cb) {
-            //setTimeout(cb, 500);
-        //}, function put(_, cb) {
-            //c.putObject(b, k, v, cb);
-        //}, function find(_, cb) {
-            //var f = '(&(_txn_snap>=1)(_id>=1))';
-            //var req = c.findObjects(b, f);
-            //req.once('error', cb);
-            //req.once('end', cb);
-            //req.once('record', function (obj) {
-                //t.ok(obj);
-                //if (!obj)
-                    //return (undefined);
+    vasync.pipeline({
+        funcs: [ function wait(_, cb) {
+            setTimeout(cb, 500);
+        }, function put(_, cb) {
+            c.putObject(b, k, v, cb);
+        }, function getTokens(_, cb) {
+            c.getTokens(function(err, res) {
+                _.tokens = res.tokens;
+                return cb(err);
+            });
+        }, function find(_, cb) {
+            var f = '(&(_txn_snap>=1)(_id>=1))';
+            var count = 0;
+            _.tokens.forEach(function(token) {
+                var req = c.findObjects(b, f, {token: token});
+                req.once('error', cb);
+                req.once('end', function() {
+                    if (++count === _.tokens.length) {
+                        return cb();
+                    }
+                    return (undefined);
+                });
+                req.once('record', function (obj) {
+                    t.ok(obj);
+                    if (!obj)
+                        return (undefined);
 
-                //t.equal(obj.bucket, b);
-                //t.equal(obj.key, k);
-                //t.deepEqual(obj.value, v);
-                //t.ok(obj._id);
-                //t.ok(obj._etag);
-                //t.ok(obj._mtime);
-                //t.ok(obj._txn_snap);
-                //found = true;
-                //return (undefined);
-            //});
-        //} ],
-        //arg: {}
-    //}, function (err) {
-        //t.ifError(err);
-        //t.ok(found);
-        //t.end();
-    //});
-//});
+                    t.equal(obj.bucket, b);
+                    t.equal(obj.key, k);
+                    t.deepEqual(obj.value, v);
+                    t.ok(obj._id);
+                    t.ok(obj._etag);
+                    t.ok(obj._mtime);
+                    t.ok(obj._txn_snap);
+                    found = true;
+                    return (undefined);
+                });
+            });
+        } ],
+        arg: {}
+    }, function (err) {
+        t.ifError(err);
+        t.ok(found);
+        t.end();
+    });
+});
 
 
 
@@ -821,26 +917,59 @@ test('trackModification (MANTA-269)', function (t) {
 });
 
 
-        //test('batch put objects', function (t) {
-            //var c = this.client;
-            //var self = this;
-            //var requests = [
-                //{
-                    //bucket: self.bucket,
-                    //key: uuid.v4(),
-                    //value: {
-                        //foo: 'bar'
-                        //}
-                        //},
-                        //{
-                            //bucket: self.bucket,
-                            //key: uuid.v4(),
-                            //value: {
-                                //bar: 'baz'
-                                //}
-                                //}
-        //];
-        //c.batch(requests, function (err, meta) {
+// we don't support batch operations
+test('unsupported batch and update operations', function (t) {
+    var b = this.bucket;
+    var c = this.client;
+    var self = this;
+    var requests = [];
+    for (var i = 0; i < 10; i++) {
+        requests.push({
+            bucket: self.bucket,
+            key: uuid.v4().substr(0, 7),
+            value: {
+                num: 20,
+                num_u: i,
+                str: 'foo',
+                str_u: uuid.v4().substr(0, 7)
+            }
+        });
+    }
+
+    c.batch(requests, function (put_err) {
+        t.ok(put_err);
+
+        c.updateObjects(b, {}, '(num>=20)', function (err) {
+            t.ok(err);
+            t.end();
+        });
+    });
+});
+
+
+//test('batch put objects', function (t) {
+    //var c = this.client;
+    //var self = this;
+    //var requests = [
+        //{
+            //bucket: self.bucket,
+            //key: uuid.v4(),
+            //value: {
+                //foo: 'bar'
+            //}
+        //},
+        //{
+            //bucket: self.bucket,
+            //key: uuid.v4(),
+            //value: {
+                //bar: 'baz'
+            //}
+        //}
+    //];
+    //c.getTokens(function(err, res) {
+        //t.ifError(err);
+        //var tokens = res.tokens;
+        //c.batch(requests, {token: tokens[0]}, function (err, meta) {
             //t.ifError(err);
             //t.ok(meta);
             //if (meta) {
@@ -852,226 +981,228 @@ test('trackModification (MANTA-269)', function (t) {
                         //t.equal(self.bucket, e.bucket);
                         //t.ok(e.key);
                         //t.ok(e.etag);
-                                //});
-                                //}
-                                //}
-                                //c.getObject(self.bucket, requests[0].key, function (er2, obj) {
-                                    //t.ifError(er2);
-                                    //t.ok(obj);
-                                    //if (obj)
-                                        //t.deepEqual(obj.value, requests[0].value);
+                    //});
+                //}
+            //}
+            //c.getObject(self.bucket, requests[0].key, function (er2, obj) {
+                //t.ifError(er2);
+                //t.ok(obj);
+                //if (obj)
+                    //t.deepEqual(obj.value, requests[0].value);
 
-                                    //var b = self.bucket;
-                                    //var r = requests[1];
-                                    //c.getObject(b, r.key, function (err3, obj2) {
-                                        //t.ifError(err3);
-                                        //t.ok(obj2);
-                                        //if (obj2)
-                                            //t.deepEqual(obj2.value, r.value);
-                                        //t.end();
-                        //});
+                //var b = self.bucket;
+                //var r = requests[1];
+                //c.getObject(b, r.key, function (err3, obj2) {
+                    //t.ifError(err3);
+                    //t.ok(obj2);
+                    //if (obj2)
+                        //t.deepEqual(obj2.value, r.value);
+                    //t.end();
                 //});
+            //});
         //});
-        //});
+    //});
+//});
 
 
-        //test('update objects no keys', function (t) {
-            //var b = this.bucket;
-            //var c = this.client;
-            //var self = this;
-            //var requests = [];
-            //for (var i = 0; i < 10; i++) {
-                //requests.push({
-                    //bucket: self.bucket,
-                    //key: uuid.v4().substr(0, 7),
-                    //value: {
-                        //num: 20,
-                        //num_u: i,
-                        //str: 'foo',
-                        //str_u: uuid.v4().substr(0, 7)
-                        //}
-                //});
+//test('update objects no keys', function (t) {
+    //var b = this.bucket;
+    //var c = this.client;
+    //var self = this;
+    //var requests = [];
+    //for (var i = 0; i < 10; i++) {
+        //requests.push({
+            //bucket: self.bucket,
+            //key: uuid.v4().substr(0, 7),
+            //value: {
+                //num: 20,
+                //num_u: i,
+                //str: 'foo',
+                //str_u: uuid.v4().substr(0, 7)
+            //}
+        //});
+    //}
+
+    //c.batch(requests, function (put_err) {
+        //t.ifError(put_err);
+        //if (put_err) {
+            //t.end();
+            //return;
+        //}
+
+        //c.updateObjects(b, {}, '(num>=20)', function (err) {
+            //t.ok(err);
+            //t.equal(err.name, 'FieldUpdateError');
+            //t.end();
+        //});
+    //});
+//});
+
+
+//test('update objects ok', function (t) {
+    //var b = this.bucket;
+    //var c = this.client;
+    //var self = this;
+    //var requests = [];
+    //for (var i = 0; i < 10; i++) {
+        //requests.push({
+            //bucket: self.bucket,
+            //key: uuid.v4().substr(0, 7),
+            //value: {
+                //num: 20,
+                //num_u: i,
+                //str: 'foo',
+                //str_u: uuid.v4().substr(0, 7)
+            //}
+        //});
+    //}
+
+    //c.batch(requests, function (put_err) {
+        //t.ifError(put_err);
+        //if (put_err) {
+            //t.end();
+            //return;
+        //}
+
+        //var fields = {str: 'bar'};
+        //c.updateObjects(b, fields, '(num>=20)', function (err, meta) {
+            //t.ifError(err);
+            //t.ok(meta);
+            //if (!meta) {
+                //t.end();
+                //return;
+            //}
+            //t.ok(meta.etag);
+
+            //c.getObject(b, requests[0].key, function (err2, obj) {
+                //t.ifError(err2);
+                //t.ok(obj);
+                //if (obj) {
+                    //t.equal(obj.value.str, 'bar');
+                    //t.equal(obj._etag, meta.etag);
                 //}
 
-                //c.batch(requests, function (put_err) {
-                    //t.ifError(put_err);
-                    //if (put_err) {
-                        //t.end();
-                        //return;
-                        //}
-
-                        //c.updateObjects(b, {}, '(num>=20)', function (err) {
-                            //t.ok(err);
-                            //t.equal(err.name, 'FieldUpdateError');
-                            //t.end();
-                //});
+                //t.end();
+            //});
         //});
+    //});
+//});
+
+
+//test('update objects w/array (ufds - no effect)', function (t) {
+    //var b = this.bucket;
+    //var c = this.client;
+    //var self = this;
+    //var requests = [];
+    //for (var i = 0; i < 10; i++) {
+        //requests.push({
+            //bucket: self.bucket,
+            //key: uuid.v4().substr(0, 7),
+            //value: {
+                //str: ['foo']
+            //}
         //});
+    //}
 
+    //c.batch(requests, function (put_err) {
+        //t.ifError(put_err);
+        //if (put_err) {
+            //t.end();
+            //return;
+        //}
 
-        //test('update objects ok', function (t) {
-            //var b = this.bucket;
-            //var c = this.client;
-            //var self = this;
-            //var requests = [];
-            //for (var i = 0; i < 10; i++) {
-                //requests.push({
-                    //bucket: self.bucket,
-                    //key: uuid.v4().substr(0, 7),
-                    //value: {
-                        //num: 20,
-                        //num_u: i,
-                        //str: 'foo',
-                        //str_u: uuid.v4().substr(0, 7)
-                        //}
-                //});
+        //var fields = {str: 'bar'};
+        //c.updateObjects(b, fields, '(str=foo)', function (err, meta) {
+            //t.ifError(err);
+            //t.ok(meta);
+            //if (!meta) {
+                //t.end();
+                //return;
+            //}
+            //t.ok(meta.etag);
+
+            //var k = requests[0].key;
+            //var o = {noCache: true};
+            //c.getObject(b, k, o, function (err2, obj) {
+                //t.ifError(err2);
+                //t.ok(obj);
+                //if (obj) {
+                    //t.ok(Array.isArray(obj.value.str));
+                    //t.notOk(obj.value.str_u);
+                    //t.equal(obj.value.str[0], 'foo');
+                    //t.equal(obj._etag, meta.etag);
                 //}
 
-                //c.batch(requests, function (put_err) {
-                    //t.ifError(put_err);
-                    //if (put_err) {
-                        //t.end();
-                        //return;
-                        //}
-
-                        //var fields = {str: 'bar'};
-                        //c.updateObjects(b, fields, '(num>=20)', function (err, meta) {
-                            //t.ifError(err);
-                            //t.ok(meta);
-                            //if (!meta) {
-                                //t.end();
-                                //return;
-                                //}
-                                //t.ok(meta.etag);
-
-                                //c.getObject(b, requests[0].key, function (err2, obj) {
-                                    //t.ifError(err2);
-                                    //t.ok(obj);
-                                    //if (obj) {
-                                        //t.equal(obj.value.str, 'bar');
-                                        //t.equal(obj._etag, meta.etag);
-                                        //}
-
-                                        //t.end();
-                        //});
-                //});
+                //t.end();
+            //});
         //});
+    //});
+//});
+
+
+// batch not supported
+//test('batch put/update', function (t) {
+    //var b = this.bucket;
+    //var c = this.client;
+    //var requests = [];
+    //for (var i = 0; i < 10; i++) {
+        //requests.push({
+            //bucket: b,
+            //key: uuid.v4().substr(0, 7),
+            //value: {
+                //num: 20,
+                //num_u: i,
+                //str: 'foo',
+                //str_u: uuid.v4().substr(0, 7)
+            //}
         //});
+    //}
 
+    //c.batch(requests, function (init_err) {
+        //t.ifError(init_err);
 
-        //test('update objects w/array (ufds - no effect)', function (t) {
-            //var b = this.bucket;
-            //var c = this.client;
-            //var self = this;
-            //var requests = [];
-            //for (var i = 0; i < 10; i++) {
-                //requests.push({
-                    //bucket: self.bucket,
-                    //key: uuid.v4().substr(0, 7),
-                    //value: {
-                        //str: ['foo']
-                        //}
-                //});
+        //var ops = [
+            //{
+                //bucket: b,
+                //key: requests[0].key,
+                //value: {
+                    //num: 10,
+                    //str: 'baz'
                 //}
-
-                //c.batch(requests, function (put_err) {
-                    //t.ifError(put_err);
-                    //if (put_err) {
-                        //t.end();
-                        //return;
-                        //}
-
-                        //var fields = {str: 'bar'};
-                        //c.updateObjects(b, fields, '(str=foo)', function (err, meta) {
-                            //t.ifError(err);
-                            //t.ok(meta);
-                            //if (!meta) {
-                                //t.end();
-                                //return;
-                                //}
-                                //t.ok(meta.etag);
-
-                                //var k = requests[0].key;
-                                //var o = {noCache: true};
-                                //c.getObject(b, k, o, function (err2, obj) {
-                                    //t.ifError(err2);
-                                    //t.ok(obj);
-                                    //if (obj) {
-                                        //t.ok(Array.isArray(obj.value.str));
-                                        //t.notOk(obj.value.str_u);
-                                        //t.equal(obj.value.str[0], 'foo');
-                                        //t.equal(obj._etag, meta.etag);
-                                        //}
-
-                                        //t.end();
-                        //});
-                //});
-        //});
-        //});
-
-
-        //test('batch put/update', function (t) {
-            //var b = this.bucket;
-            //var c = this.client;
-            //var requests = [];
-            //for (var i = 0; i < 10; i++) {
-                //requests.push({
-                    //bucket: b,
-                    //key: uuid.v4().substr(0, 7),
-                    //value: {
-                        //num: 20,
-                        //num_u: i,
-                        //str: 'foo',
-                        //str_u: uuid.v4().substr(0, 7)
-                        //}
-                //});
+            //},
+            //{
+                //bucket: b,
+                //operation: 'update',
+                //fields: {
+                    //str: 'bar'
+                //},
+                //filter: '(num_u>=5)'
+            //}
+        //];
+        //c.batch(ops, function (err, meta) {
+            //t.ifError(err);
+            //t.ok(meta);
+            //t.ok(meta.etags);
+            //var req = c.findObjects(b, '(num_u>=0)');
+            //req.once('error', function (e) {
+                //t.ifError(e);
+                //t.end();
+            //});
+            //req.once('end', function () {
+                //t.end();
+            //});
+            //req.on('record', function (r) {
+                //t.equal(r.bucket, b);
+                //t.ok(r.key);
+                //var v = r.value;
+                //if (v.num_u >= 5) {
+                    //t.equal(v.str, 'bar');
+                //} else if (r.key === requests[0].key) {
+                    //t.equal(v.str, 'baz');
+                //} else {
+                    //t.equal(v.str, 'foo');
                 //}
-
-                //c.batch(requests, function (init_err) {
-                    //t.ifError(init_err);
-
-                    //var ops = [
-                        //{
-                            //bucket: b,
-                            //key: requests[0].key,
-                            //value: {
-                                //num: 10,
-                                //str: 'baz'
-                                //}
-                                //},
-                                //{
-                                    //bucket: b,
-                                    //operation: 'update',
-                                    //fields: {
-                                        //str: 'bar'
-                                        //},
-                                        //filter: '(num_u>=5)'
-                                        //}
-                //];
-                //c.batch(ops, function (err, meta) {
-                    //t.ifError(err);
-                    //t.ok(meta);
-                    //t.ok(meta.etags);
-                    //var req = c.findObjects(b, '(num_u>=0)');
-                    //req.once('error', function (e) {
-                        //t.ifError(e);
-                        //t.end();
-                        //});
-                        //req.once('end', function () {
-                            //t.end();
-                        //});
-                        //req.on('record', function (r) {
-                            //t.equal(r.bucket, b);
-                            //t.ok(r.key);
-                            //var v = r.value;
-                            //if (v.num_u >= 5) {
-                                //t.equal(v.str, 'bar');
-                                //} else if (r.key === requests[0].key) {
-                                    //t.equal(v.str, 'baz');
-                                    //} else {
-                                        //t.equal(v.str, 'foo');
-                                        //}
-                        //});
-                //});
+            //});
         //});
-        //});
+    //});
+//});
