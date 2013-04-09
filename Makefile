@@ -33,7 +33,8 @@ JSL_FILES_NODE   = $(JS_FILES)
 JSSTYLE_FILES	 = $(JS_FILES)
 JSSTYLE_FLAGS    = -f tools/jsstyle.conf
 REPO_MODULES	 = src/node-dummy
-SMF_MANIFESTS_IN = smf/manifests/bapi.xml.in
+SMF_MANIFESTS_IN = smf/manifests/haproxy.xml.in
+
 
 NODE_PREBUILT_VERSION=v0.8.22
 
