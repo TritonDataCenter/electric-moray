@@ -63,7 +63,7 @@ TMPDIR                  := /tmp/$(STAMP)
 # Repo-specific targets
 #
 .PHONY: all
-all: $(SMF_MANIFESTS) | $(TAP) $(REPO_DEPS)
+all: $(SMF_MANIFESTS) | $(REPO_DEPS)
 	$(NPM) rebuild
 
 $(TAP): | $(NPM_EXEC)
