@@ -945,6 +945,14 @@ test('unsupported batch and update operations', function (t) {
     });
 });
 
+test('unsupported deletemany', function (t) {
+        var b = this.bucket;
+        var c = this.client;
+        c.deleteMany(b, '(num>=20)', function (err) {
+            t.ok(err);
+            t.end();
+        });
+});
 
 //test('batch put objects', function (t) {
     //var c = this.client;
