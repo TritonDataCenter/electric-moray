@@ -56,6 +56,8 @@ include ./tools/mk/Makefile.smf.defs
 
 RELEASE_TARBALL         := electric-moray-pkg-$(STAMP).tar.bz2
 ROOT                    := $(shell pwd)
+# can't use TMPDIR since this will conflict with TMPDIR defined in the node
+# Makefile
 MTMPDIR                  := /tmp/$(STAMP)
 
 #
