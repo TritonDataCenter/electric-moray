@@ -54,7 +54,7 @@ include ./tools/mk/Makefile.smf.defs
 # MG Variables
 #
 
-RELEASE_TARBALL         := moray-pkg-$(STAMP).tar.bz2
+RELEASE_TARBALL         := electric-moray-pkg-$(STAMP).tar.bz2
 ROOT                    := $(shell pwd)
 TMPDIR                  := /tmp/$(STAMP)
 
