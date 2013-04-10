@@ -100,8 +100,8 @@ publish: release
 		@echo "error: 'BITS_DIR' must be set for 'publish' target"; \
 		exit 1; \
 	fi
-	mkdir -p $(BITS_DIR)/moray
-	cp $(ROOT)/$(RELEASE_TARBALL) $(BITS_DIR)/moray/$(RELEASE_TARBALL)
+	mkdir -p $(BITS_DIR)/electric-moray
+	cp $(ROOT)/$(RELEASE_TARBALL) $(BITS_DIR)/electric-moray/$(RELEASE_TARBALL)
 
 include ./tools/mk/Makefile.deps
 ifeq ($(shell uname -s),SunOS)
