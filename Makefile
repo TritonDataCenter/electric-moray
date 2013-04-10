@@ -35,7 +35,7 @@ REPO_MODULES	 = src/node-dummy
 SMF_MANIFESTS_IN = smf/manifests/haproxy.xml.in
 
 
-NODE_PREBUILT_VERSION=v0.8.22
+NODE_PREBUILT_VERSION=v0.8.23
 
 ifeq ($(shell uname -s),SunOS)
 	NODE_PREBUILT_CC_VERSION=4.6.2
@@ -56,7 +56,7 @@ include ./tools/mk/Makefile.smf.defs
 
 RELEASE_TARBALL         := electric-moray-pkg-$(STAMP).tar.bz2
 ROOT                    := $(shell pwd)
-TMPDIR                  := /tmp/$(STAMP)
+MTMPDIR                  := /tmp/$(STAMP)
 
 #
 # Repo-specific targets
@@ -79,20 +79,20 @@ test: | $(NODEUNIT)
 .PHONY: release
 release: all docs $(SMF_MANIFESTS)
 	@echo "Building $(RELEASE_TARBALL)"
-	@mkdir -p $(TMPDIR)/root/opt/smartdc/electric-moray
-	@mkdir -p $(TMPDIR)/root
-	@mkdir -p $(TMPDIR)/root/opt/smartdc/electric-moray/etc
+	@mkdir -p $(MTMPDIR)/root/opt/smartdc/electric-moray
+	@mkdir -p $(MTMPDIR)/root
+	@mkdir -p $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
 	cp -r $(ROOT)/build \
 		$(ROOT)/lib \
 		$(ROOT)/main.js \
 		$(ROOT)/node_modules \
 		$(ROOT)/package.json \
 		$(ROOT)/smf \
-		$(TMPDIR)/root/opt/smartdc/electric-moray/
-	cp $(ROOT)/etc/config.json.in $(TMPDIR)/root/opt/smartdc/electric-moray/etc
-	cp $(ROOT)/etc/haproxy.cfg.in $(TMPDIR)/root/opt/smartdc/electric-moray/etc
-	(cd $(TMPDIR) && $(TAR) -jcf $(ROOT)/$(RELEASE_TARBALL) root)
-	@rm -rf $(TMPDIR)
+		$(MTMPDIR)/root/opt/smartdc/electric-moray/
+	cp $(ROOT)/etc/config.json.in $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
+	cp $(ROOT)/etc/haproxy.cfg.in $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
+	(cd $(MTMPDIR) && $(TAR) -jcf $(ROOT)/$(RELEASE_TARBALL) root)
+	@rm -rf $(MTMPDIR)
 
 .PHONY: publish
 publish: release
