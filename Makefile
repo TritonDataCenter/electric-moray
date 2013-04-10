@@ -17,7 +17,6 @@
 #
 # Tools
 #
-TAP		:= ./node_modules/.bin/tap
 NODEUNIT	:= ./node_modules/.bin/nodeunit
 NODECOVER	:= ./node_modules/.bin/cover
 BUNYAN		:= ./node_modules/.bin/bunyan
@@ -63,16 +62,16 @@ TMPDIR                  := /tmp/$(STAMP)
 # Repo-specific targets
 #
 .PHONY: all
-all: $(SMF_MANIFESTS) | $(REPO_DEPS)
+all: $(SMF_MANIFESTS) | $(REPO_DEPS) $(NODEUNIT)
 	$(NPM) rebuild
 
-$(TAP): | $(NPM_EXEC)
+$(NODEUNIT): | $(NPM_EXEC)
 	$(NPM) install
 
 CLEAN_FILES += $(TAP) ./node_modules/tap
 
 .PHONY: test
-test: $(NODEUNIT)
+test: | $(NODEUNIT)
 	$(NODEUNIT) test/buckets.test.js | $(BUNYAN)
 	$(NODEUNIT) test/objects.test.js | $(BUNYAN)
 	$(NODEUNIT) test/integ.test.js | $(BUNYAN)
