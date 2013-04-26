@@ -16,7 +16,7 @@ defaults
         timeout queue   0
         timeout connect 500
 
-frontend moray
+frontend electric-moray
         bind *:2020
         default_backend servers
 
