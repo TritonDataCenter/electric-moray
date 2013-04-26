@@ -8,15 +8,8 @@
         "size": 1000,
         "expiry": 60
     },
-    "client": [{
-        "host": "10.99.99.42",
-        "port": 2020
-    },{
-        "host": "10.99.99.43",
-        "port": 2020
-    }],
     "ring": {
-        "pnodes": ["10.99.99.42", "10.99.99.43"],
+        "pnodes": ["tcp://10.99.99.41:2020"],
         "vnodes": 100,
         "algorithm": {
             "algorithm": "sha256",
