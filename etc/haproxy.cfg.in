@@ -21,4 +21,4 @@ frontend moray
         default_backend servers
 
 backend servers
-@@MORAY_INSTANCES@@
+@@ELECTRIC-MORAY_INSTANCES@@

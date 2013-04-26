@@ -52,7 +52,7 @@
 
         <instance name="@@ELECTRIC-MORAY_INSTANCE_NAME@@" enabled="true">
             <property_group name="electric-moray" type="application">
-                <propval name="port" type="astring" value="@@electric-moray_PORT@@" />
+                <propval name="port" type="astring" value="@@ELECTRIC-MORAY_PORT@@" />
             </property_group>
         </instance>
 
