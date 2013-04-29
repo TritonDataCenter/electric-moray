@@ -91,7 +91,6 @@ release: all docs $(SMF_MANIFESTS)
 		$(ROOT)/package.json \
 		$(ROOT)/smf \
 		$(MTMPDIR)/root/opt/smartdc/electric-moray/
-	cp $(ROOT)/etc/config.json.in $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
 	cp $(ROOT)/etc/haproxy.cfg.in $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
 	(cd $(MTMPDIR) && $(TAR) -jcf $(ROOT)/$(RELEASE_TARBALL) root)
 	@rm -rf $(MTMPDIR)
