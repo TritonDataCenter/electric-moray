@@ -9,7 +9,7 @@
         "expiry": 60
     },
     "ring": {
-        "pnodes": ["tcp://10.99.99.41:2020"],
+        "pnodes": ["tcp://10.99.99.54:2020"],
         "vnodes": 100,
         "algorithm": {
             "algorithm": "sha256",
