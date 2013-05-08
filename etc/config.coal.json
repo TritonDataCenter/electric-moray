@@ -8,12 +8,5 @@
         "size": 1000,
         "expiry": 60
     },
-    "ring": {
-        "pnodes": ["tcp://10.99.99.54:2020"],
-        "vnodes": 100,
-        "algorithm": {
-            "algorithm": "sha256",
-            "max": "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
-        }
-    }
+    "ring": {"vnodes":10,"pnodeToVnodeMap":{"moray.coal.joyent.us":{"0":null,"1":null,"2":null,"3":null,"4":null,"5":null,"6":null,"7":null,"8":null,"9":null}},"algorithm":{"algorithm":"sha256","max":"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"}}
 }
