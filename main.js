@@ -81,7 +81,7 @@ function setupLogger(config) {
 function parseOptions() {
     var option;
     var opts = {};
-    var parser = new getopt.BasicParser('cvf:p:', process.argv);
+    var parser = new getopt.BasicParser('cvf:r:p:', process.argv);
 
     while ((option = parser.getopt()) !== undefined) {
         switch (option.option) {
@@ -91,7 +91,9 @@ function parseOptions() {
             case 'f':
                 opts.file = option.optarg;
                 break;
-
+            case 'r':
+                opts.ringFile = option.optarg;
+                break;
             case 'p':
                 opts.port = parseInt(option.optarg, 10);
                 if (isNaN(opts.port)) {
@@ -101,7 +103,6 @@ function parseOptions() {
                     process.exit(1);
                 }
                 break;
-
             case 'v':
                 // Allows us to set -vvv -> this little hackery just ensures
                 // that we're never < TRACE
@@ -110,7 +111,6 @@ function parseOptions() {
                 if (LOG.level() <= bunyan.DEBUG)
                     LOG = LOG.child({src: true});
                 break;
-
             default:
                 process.exit(1);
                 break;
@@ -141,6 +141,15 @@ function readConfig(options) {
         process.exit(1);
     }
 
+    try {
+        cfg.ring = JSON.parse(fs.readFileSync(options.ringFile, 'utf8')).ring;
+    } catch (e) {
+        LOG.fatal({
+            err: e,
+            file: options.ring
+        }, 'Unable to read/parse ring configuration file');
+        process.exit(1);
+    }
     return (extend({}, clone(DEFAULTS), cfg, options));
 }
 
