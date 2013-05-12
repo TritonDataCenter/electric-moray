@@ -663,7 +663,8 @@ test('find MANTA-156', function (t) {
 test('find with hashkey', function(t) {
     var b = this.bucket;
     var c = this.client;
-    var k = uuid.v4() + '/' + uuid.v4();
+    var hashkey = uuid.v4();
+    var k = hashkey + '/' + uuid.v4();
     var v = {
         num: 0,
         num_u: 1
@@ -677,7 +678,7 @@ test('find with hashkey', function(t) {
             c.putObject(b, k, v, cb);
         }, function find(_, cb) {
             var f = '(num>=0)';
-            var req = c.findObjects(b, f, {hashkey: k});
+            var req = c.findObjects(b, f, {hashkey: hashkey});
             req.once('error', cb);
             req.once('end', cb);
             req.once('record', function (obj) {
