@@ -142,7 +142,7 @@ function readConfig(options) {
     }
 
     try {
-        cfg.ring = JSON.parse(fs.readFileSync(options.ringFile, 'utf8')).ring;
+        cfg.ring = JSON.parse(fs.readFileSync(options.ringFile, 'utf8'));
     } catch (e) {
         LOG.fatal({
             err: e,
