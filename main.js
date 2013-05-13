@@ -21,7 +21,7 @@ var DEFAULTS = {
     file: process.cwd() + '/etc/config.json',
     port: 2020
 };
-var NAME = 'moray';
+var NAME = 'electric-moray';
 var LOG_SERIALIZERS = {
     err: bunyan.stdSerializers.err,
     pg: function (client) {
