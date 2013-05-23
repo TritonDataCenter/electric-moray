@@ -84,7 +84,7 @@ function assertObject(b, t, obj, k, v) {
 
 before(function (cb) {
     var self = this;
-    this.bucket = 'manta';
+    this.bucket = 'testmanta';
     this.assertObject = assertObject.bind(this, this.bucket);
     this.client = helper.createClient();
     this.client.on('connect', function () {
