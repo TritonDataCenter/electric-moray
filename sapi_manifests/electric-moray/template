@@ -1,0 +1,15 @@
+{
+  "bunyan": {
+    "level": "info",
+    "syslog": {
+      "facility": "local0",
+      "type": "udp"
+    }
+  },
+  "numWorkers": 0,
+  "audit": false,
+  "cache": {
+    "size": 5000,
+    "expiry": 60
+  }
+}

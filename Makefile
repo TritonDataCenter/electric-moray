@@ -89,6 +89,7 @@ release: all docs $(SMF_MANIFESTS)
 		$(ROOT)/main.js \
 		$(ROOT)/node_modules \
 		$(ROOT)/package.json \
+		$(ROOT)/sapi_manifests \
 		$(ROOT)/smf \
 		$(MTMPDIR)/root/opt/smartdc/electric-moray/
 	cp $(ROOT)/etc/haproxy.cfg.in $(MTMPDIR)/root/opt/smartdc/electric-moray/etc

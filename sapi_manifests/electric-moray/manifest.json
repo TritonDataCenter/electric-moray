@@ -1,0 +1,6 @@
+{
+    "name": "electric-moray",
+    "path": "/opt/smartdc/electric-moray/etc/config.json",
+    "post_cmd": "/usr/sbin/svcadm refresh electric-moray",
+	"master": true
+}
