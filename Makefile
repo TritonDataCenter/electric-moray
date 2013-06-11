@@ -64,7 +64,7 @@ MTMPDIR                  := /tmp/$(STAMP)
 # Repo-specific targets
 #
 .PHONY: all
-all: $(SMF_MANIFESTS) | $(REPO_DEPS) $(NODEUNIT)
+all: $(SMF_MANIFESTS) | $(REPO_DEPS) $(NODEUNIT) $(NPM_EXEC)
 	$(NPM) rebuild
 
 $(NODEUNIT): | $(NPM_EXEC)
