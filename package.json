@@ -18,7 +18,7 @@
         "ldapjs": "0.6.2",
         "lru-cache": "2.2.2",
         "microtime": "0.3.3",
-        "moray": "git+ssh://git@git.joyent.com:node-moray.git#master",
+        "moray": "git+ssh://git@git.joyent.com:node-moray.git#14fa66df5db51f4edd1f40361efa01c6a798b75b",
         "node-uuid": "1.4.0",
         "once": "1.1.1",
         "panic": "0.2.1",
