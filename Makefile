@@ -64,7 +64,7 @@ MTMPDIR                  := /tmp/$(STAMP)
 # Repo-specific targets
 #
 .PHONY: all
-all: $(SMF_MANIFESTS) | $(REPO_DEPS) $(NODEUNIT) $(NPM_EXEC)
+all: $(SMF_MANIFESTS) | $(REPO_DEPS) $(NODEUNIT) $(NPM_EXEC) scripts
 	$(NPM) rebuild
 
 $(NODEUNIT): | $(NPM_EXEC)
@@ -82,9 +82,10 @@ test: | $(NODEUNIT)
 release: all docs $(SMF_MANIFESTS)
 	@echo "Building $(RELEASE_TARBALL)"
 	@mkdir -p $(MTMPDIR)/root/opt/smartdc/electric-moray
-	@mkdir -p $(MTMPDIR)/root
+	@mkdir -p $(MTMPDIR)/root/opt/smartdc/boot
 	@mkdir -p $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
 	cp -r $(ROOT)/build \
+		$(ROOT)/boot \
 		$(ROOT)/lib \
 		$(ROOT)/main.js \
 		$(ROOT)/node_modules \
@@ -92,6 +93,11 @@ release: all docs $(SMF_MANIFESTS)
 		$(ROOT)/sapi_manifests \
 		$(ROOT)/smf \
 		$(MTMPDIR)/root/opt/smartdc/electric-moray/
+	mv $(MTMPDIR)/root/opt/smartdc/electric-moray/build/scripts \
+	    $(MTMPDIR)/root/opt/smartdc/electric-moray/boot
+	ln -s /opt/smartdc/electric-moray/boot/configure.sh \
+	    $(MTMPDIR)/root/opt/smartdc/boot/configure.sh
+	chmod 755 $(MTMPDIR)/root/opt/smartdc/electric-moray/boot/configure.sh
 	cp $(ROOT)/etc/haproxy.cfg.in $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
 	cp $(ROOT)/etc/*ring*.json $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
 	(cd $(MTMPDIR) && $(TAR) -jcf $(ROOT)/$(RELEASE_TARBALL) root)
