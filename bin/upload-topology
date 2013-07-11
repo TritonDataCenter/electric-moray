@@ -1,0 +1,26 @@
+#!/bin/bash
+
+#
+# manta-upload-topology: upload the ring topology to manta
+#
+
+source /root/.bashrc # source in the manta configs such as the url and credentials
+export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+set -o xtrace
+set -o pipefail
+
+TOPOLOGY_DIR=/poseidon/stor/topology
+MMKDIR=~/electric-moray/node_modules/.bin/mmkdir
+#MMKDIR=/opt/smartdc/electric-moray/node_modules/manta/bin/mmkdir
+MPUT=~/electric-moray/node_modules/.bin/mput
+#MPUT=/opt/smartdc/electric-moray/node_modules/manta/bin/mput
+
+function fatal
+{
+    echo "$(basename $0): fatal error: $*"
+    exit 1
+}
+
+$MMKDIR -p $TOPOLOGY_DIR
+$MPUT "$TOPOLOGY_DIR/ring-$(date -u +%Y-%m-%d-%H-%S-$(zonename)).json" -f /opt/smartdc/electric-moray/etc/ring.json
+[[ $? -eq 0 ]] || fatal "unable to upload ring"
