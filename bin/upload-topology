@@ -10,10 +10,8 @@ set -o xtrace
 set -o pipefail
 
 TOPOLOGY_DIR=/poseidon/stor/topology
-MMKDIR=~/electric-moray/node_modules/.bin/mmkdir
-#MMKDIR=/opt/smartdc/electric-moray/node_modules/manta/bin/mmkdir
-MPUT=~/electric-moray/node_modules/.bin/mput
-#MPUT=/opt/smartdc/electric-moray/node_modules/manta/bin/mput
+MMKDIR=/opt/smartdc/electric-moray/node_modules/manta/bin/mmkdir
+MPUT=/opt/smartdc/electric-moray/node_modules/manta/bin/mput
 
 function fatal
 {
