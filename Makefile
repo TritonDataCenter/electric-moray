@@ -85,6 +85,7 @@ release: all docs $(SMF_MANIFESTS)
 	@mkdir -p $(MTMPDIR)/root/opt/smartdc/boot
 	@mkdir -p $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
 	cp -r $(ROOT)/build \
+		$(ROOT)/bin \
 		$(ROOT)/boot \
 		$(ROOT)/lib \
 		$(ROOT)/main.js \
