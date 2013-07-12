@@ -17,6 +17,7 @@
         "fast": "git://github.com/mcavage/node-fast.git#7592a1f764b6a5cc6d5f9a809c447464253fb619",
         "ldapjs": "0.6.2",
         "lru-cache": "2.2.2",
+        "manta": "git+ssh://git@github.com:joyent/node-manta.git#master",
         "microtime": "0.3.3",
         "moray": "git+ssh://git@git.joyent.com:node-moray.git#14fa66df5db51f4edd1f40361efa01c6a798b75b",
         "node-uuid": "1.4.0",
