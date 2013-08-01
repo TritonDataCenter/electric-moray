@@ -23,10 +23,7 @@ var DEFAULTS = {
 };
 var NAME = 'electric-moray';
 var LOG_SERIALIZERS = {
-    err: bunyan.stdSerializers.err,
-    pg: function (client) {
-        return (client ? client._moray_id : undefined);
-    }
+    err: bunyan.stdSerializers.err
 };
 // We'll replace this with the syslog later, if applicable
 var LOG = bunyan.createLogger({

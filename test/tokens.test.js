@@ -60,7 +60,7 @@ after(function (cb) {
 test('get tokens', function (t) {
     var c = this.client;
 
-    c.getTokens(function(err, tokens) {
+    c.getTokens(function (err, tokens) {
         t.ok(tokens);
         t.end();
     });

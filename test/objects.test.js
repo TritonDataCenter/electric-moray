@@ -503,17 +503,17 @@ test('find (like marlin)', function (t) {
         funcs: [ function put(_, cb) {
             c.putObject(b, k, v, cb);
         }, function getTokens(_, cb) {
-            c.getTokens(function(err, res) {
+            c.getTokens(function (err, res) {
                 _.tokens = res.tokens;
                 return cb(err);
             });
         }, function find(_, cb) {
             var f = '(&(str=hello)(!(str_2=usa)))';
             var count = 0;
-            _.tokens.forEach(function(token) {
+            _.tokens.forEach(function (token) {
                 var req = c.findObjects(b, f, {token: token});
                 req.once('error', cb);
-                req.once('end', function() {
+                req.once('end', function () {
                     if (++count === _.tokens.length) {
                         return cb();
                     }
@@ -562,17 +562,17 @@ test('find _mtime', function (t) {
         }, function put(_, cb) {
             c.putObject(b, k, v, cb);
         }, function getTokens(_, cb) {
-            c.getTokens(function(err, res) {
+            c.getTokens(function (err, res) {
                 _.tokens = res.tokens;
                 return cb(err);
             });
         }, function find(_, cb) {
             var f = '(_mtime>=' + now + ')';
             var count = 0;
-            _.tokens.forEach(function(token) {
+            _.tokens.forEach(function (token) {
                 var req = c.findObjects(b, f, {token: token});
                 req.once('error', cb);
-                req.once('end', function() {
+                req.once('end', function () {
                     if (++count === _.tokens.length) {
                         return cb();
                     }
@@ -619,17 +619,17 @@ test('find MANTA-156', function (t) {
         }, function put(_, cb) {
             c.putObject(b, k, v, cb);
         }, function getTokens(_, cb) {
-            c.getTokens(function(err, res) {
+            c.getTokens(function (err, res) {
                 _.tokens = res.tokens;
                 return cb(err);
             });
         }, function find(_, cb) {
             var f = '(num>=0)';
             var count = 0;
-            _.tokens.forEach(function(token) {
+            _.tokens.forEach(function (token) {
                 var req = c.findObjects(b, f, {token: token});
                 req.once('error', cb);
-                req.once('end', function() {
+                req.once('end', function () {
                     if (++count === _.tokens.length) {
                         return cb();
                     }
@@ -660,7 +660,7 @@ test('find MANTA-156', function (t) {
 });
 
 
-test('find with hashkey', function(t) {
+test('find with hashkey', function (t) {
     var b = this.bucket;
     var c = this.client;
     var hashkey = uuid.v4();
@@ -720,17 +720,17 @@ test('non-indexed AND searches (MANTA-317)', function (t) {
         }, function put(_, cb) {
             c.putObject(b, k, v, cb);
         }, function getTokens(_, cb) {
-            c.getTokens(function(err, res) {
+            c.getTokens(function (err, res) {
                 _.tokens = res.tokens;
                 return cb(err);
             });
         }, function find(_, cb) {
             var f = '(&(str=hello)(!(cow=woof)))';
             var count = 0;
-            _.tokens.forEach(function(token) {
+            _.tokens.forEach(function (token) {
                 var req = c.findObjects(b, f, {token: token});
                 req.once('error', cb);
-                req.once('end', function() {
+                req.once('end', function () {
                     if (++count === _.tokens.length) {
                         return cb();
                     }
@@ -827,17 +827,17 @@ test('find _txn_snap', function (t) {
         }, function put(_, cb) {
             c.putObject(b, k, v, cb);
         }, function getTokens(_, cb) {
-            c.getTokens(function(err, res) {
+            c.getTokens(function (err, res) {
                 _.tokens = res.tokens;
                 return cb(err);
             });
         }, function find(_, cb) {
             var f = '(&(_txn_snap>=1)(_id>=1))';
             var count = 0;
-            _.tokens.forEach(function(token) {
+            _.tokens.forEach(function (token) {
                 var req = c.findObjects(b, f, {token: token});
                 req.once('error', cb);
-                req.once('end', function() {
+                req.once('end', function () {
                     if (++count === _.tokens.length) {
                         return cb();
                     }

@@ -18,14 +18,13 @@
 # Tools
 #
 NODEUNIT	:= ./node_modules/.bin/nodeunit
-NODECOVER	:= ./node_modules/.bin/cover
 BUNYAN		:= ./node_modules/.bin/bunyan
 JSONTOOL	:= ./node_modules/.bin/json
 
 #
 # Files
 #
-DOC_FILES	 = index.restdown boilerplateapi.restdown
+DOC_FILES	 = index.restdown
 JS_FILES	:= $(shell ls *.js) $(shell find lib test -name '*.js')
 JSL_CONF_NODE	 = tools/jsl.node.conf
 JSL_FILES_NODE   = $(JS_FILES)
@@ -35,7 +34,7 @@ REPO_MODULES	 = src/node-dummy
 SMF_MANIFESTS_IN = smf/manifests/haproxy.xml.in
 
 
-NODE_PREBUILT_VERSION=v0.8.23
+NODE_PREBUILT_VERSION=v0.10.12
 
 ifeq ($(shell uname -s),SunOS)
 	NODE_PREBUILT_CC_VERSION=4.6.2
@@ -64,16 +63,19 @@ MTMPDIR                  := /tmp/$(STAMP)
 # Repo-specific targets
 #
 .PHONY: all
-all: $(SMF_MANIFESTS) | $(REPO_DEPS) $(NODEUNIT) $(NPM_EXEC) scripts
-	$(NPM) rebuild
+all: $(SMF_MANIFESTS) deps scripts
+
+.PHONY: deps
+deps: | $(REPO_DEPS) $(NPM_EXEC)
+	$(NPM_ENV) $(NPM) install
 
 $(NODEUNIT): | $(NPM_EXEC)
 	$(NPM) install
 
-CLEAN_FILES += $(TAP) ./node_modules/tap
+CLEAN_FILES += $(TAP) ./node_modules
 
 .PHONY: test
-test: | $(NODEUNIT)
+test: $(NODEUNIT)
 	$(NODEUNIT) test/buckets.test.js | $(BUNYAN)
 	$(NODEUNIT) test/objects.test.js | $(BUNYAN)
 	$(NODEUNIT) test/integ.test.js | $(BUNYAN)

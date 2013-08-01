@@ -118,11 +118,11 @@ test('update bucket', function (t) {
 });
 
 
-test('delete bucket', function(t) {
+test('delete bucket', function (t) {
     var b = this.bucket;
     var c = this.client;
 
-    c.deleteBucket(b, function(err) {
+    c.deleteBucket(b, function (err) {
         t.ok(err);
         t.equal(err.name, 'ReadOnlyError');
         t.end();
