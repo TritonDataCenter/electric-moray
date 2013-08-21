@@ -29,6 +29,7 @@ var LOG_SERIALIZERS = {
 var LOG = bunyan.createLogger({
     name: NAME,
     level: (process.env.LOG_LEVEL || 'info'),
+    src: true,
     stream: process.stderr,
     serializers: LOG_SERIALIZERS
 });
