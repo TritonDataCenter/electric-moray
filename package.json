@@ -14,7 +14,7 @@
         "bunyan-syslog": "0.2.1",
         "clone": "0.1.9",
         "dtrace-provider": "0.2.8",
-        "fash": "2.0.1",
+        "fash": "2.0.2",
         "fast": "0.2.8",
         "ldapjs": "0.6.3",
         "moray": "git+ssh://git@git.joyent.com:node-moray.git#74af2a4",
