@@ -90,7 +90,7 @@ function parseOptions() {
                 opts.file = option.optarg;
                 break;
             case 'r':
-                opts.ringFile = option.optarg;
+                opts.ringLocation = option.optarg;
                 break;
             case 'p':
                 opts.port = parseInt(option.optarg, 10);
@@ -139,15 +139,8 @@ function readConfig(options) {
         process.exit(1);
     }
 
-    try {
-        cfg.ring = fs.readFileSync(options.ringFile, 'utf8');
-    } catch (e) {
-        LOG.fatal({
-            err: e,
-            file: options.ring
-        }, 'Unable to read/parse ring configuration file');
-        process.exit(1);
-    }
+    cfg.ringLocation = options.ringLocation;
+
     return (extend({}, clone(DEFAULTS), cfg, options));
 }
 

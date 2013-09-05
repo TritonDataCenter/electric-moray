@@ -1,6 +1,8 @@
 #!/bin/bash
 # -*- mode: shell-script; fill-column: 80; -*-
 
+# Boostraps the consistent hash ring for electric-moray.
+
 set -o xtrace
 set -o errexit
 set -o pipefail
@@ -72,9 +74,11 @@ function manta_setup_leveldb_hash_ring {
     # out since we expect the topology to be there in the configure script
     for i in "${leveldb_dirs[@]}"
     do
-        mkdir -p $LEVELDB_DIR$i
-        $FASH deserialize_ring -f $SERIALIZED_RING -l $LEVELDB_DIR$i
+        mkdir -p $i
+        $FASH deserialize_ring -f $SERIALIZED_RING -l $i
     done
+    ZFS_SNAPSHOT=$ZFS_DATASET@$(date +%s)000
+    zfs snapshot $ZFS_SNAPSHOT
 }
 
 # Mainline

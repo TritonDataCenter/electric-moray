@@ -27,7 +27,7 @@
         <exec_method
             type="method"
             name="start"
-            exec="node main.js -f etc/config.json -r etc/ring.json -p %{electric-moray/port} &amp;"
+            exec="node main.js -f etc/config.json -r %{electric-moray/ring-location} -p %{electric-moray/port} &amp;"
             timeout_seconds="30">
             <method_context working_directory="/opt/smartdc/electric-moray">
                 <method_credential user="nobody"
@@ -53,6 +53,7 @@
         <instance name="@@ELECTRIC-MORAY_INSTANCE_NAME@@" enabled="true">
             <property_group name="electric-moray" type="application">
                 <propval name="port" type="astring" value="@@ELECTRIC-MORAY_PORT@@" />
+                <propval name="ring-location" type="astring" value="/electric-moray/chash/leveldb-@@ELECTRIC-MORAY_PORT@@" />
             </property_group>
         </instance>
 
