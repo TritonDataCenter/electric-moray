@@ -58,12 +58,16 @@ function manta_setup_electric_moray_instances {
 function manta_setup_leveldb_hash_ring {
     # create the dataset
     zfs create -o canmount=noauto $ZFS_DATASET
+    [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
     # create the mountpoint dir
     mkdir -p $LEVELDB_DIR_PARENT
+    [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
     # set the mountpoint
     zfs set mountpoint=$LEVELDB_DIR_PARENT $ZFS_DATASET
+    [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
     # mount the dataset
     zfs mount $ZFS_DATASET
+    [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
     # build the list of leveldb locations
     local leveldb_dirs
     for (( i=1; i<=$ELECTRIC_MORAY_INSTANCES; i++ ))
@@ -76,10 +80,13 @@ function manta_setup_leveldb_hash_ring {
     for i in "${leveldb_dirs[@]}"
     do
         mkdir -p $i
+        [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
         $FASH deserialize_ring -f $SERIALIZED_RING -l $i
+        [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
     done
     ZFS_SNAPSHOT=$ZFS_DATASET@$(date +%s)000
     zfs snapshot $ZFS_SNAPSHOT
+    [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
 }
 
 # Mainline
