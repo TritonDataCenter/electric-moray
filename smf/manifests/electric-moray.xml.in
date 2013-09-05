@@ -30,9 +30,7 @@
             exec="node main.js -f etc/config.json -r %{electric-moray/ring-location} -p %{electric-moray/port} &amp;"
             timeout_seconds="30">
             <method_context working_directory="/opt/smartdc/electric-moray">
-                <method_credential user="nobody"
-                    group="nobody"
-                    privileges="basic,net_privaddr"/>
+                <method_credential user="root" group="nobody" />
                 <method_environment>
                     <envvar name="PATH"
                         value="/opt/smartdc/electric-moray/build/node/bin:/opt/local/bin:/usr/bin:/usr/sbin:/bin"/>
