@@ -6,7 +6,6 @@
 set -o xtrace
 set -o errexit
 set -o pipefail
-PS4='Line ${LINENO}: '
 
 SOURCE="${BASH_SOURCE[0]}"
 if [[ -h $SOURCE ]]; then
@@ -20,6 +19,7 @@ source ${DIR}/scripts/util.sh
 source ${DIR}/scripts/services.sh
 
 export PATH=$SVC_ROOT/bin:$SVC_ROOT/build/node/bin:/opt/local/bin:/usr/sbin/:/usr/bin:$PATH
+export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 RING_PREFIX=/opt/smartdc/electric-moray/etc
 SERIALIZED_RING=$RING_PREFIX/ring.json
