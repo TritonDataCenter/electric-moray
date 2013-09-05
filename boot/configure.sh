@@ -24,20 +24,6 @@ function manta_setup_electric_moray {
         electric_moray_instances=4
     fi
 
-    #XXX migrate this later. use the correct ring topology based on stage
-    local cfg_prefix='/opt/smartdc/electric-moray/etc/'
-    if [ "$size" = "lab" ]; then
-        mv $cfg_prefix/lab.ring.json $cfg_prefix/ring.json
-    fi
-
-    if [ "$size" = "production" ]; then
-        mv $cfg_prefix/prod.ring.json $cfg_prefix/ring.json
-    fi
-
-    if [ "$size" = "coal" ]; then
-        mv $cfg_prefix/coal.ring.json $cfg_prefix/ring.json
-    fi
-
     #Build the list of ports.  That'll be used for everything else.
     local ports
     for (( i=1; i<=$electric_moray_instances; i++ )); do
