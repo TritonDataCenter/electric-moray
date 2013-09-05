@@ -32,7 +32,6 @@ ZFS_PARENT_DATASET=zones/$ZONE_UUID/data
 ZFS_DATASET=$ZFS_PARENT_DATASET/electric-moray
 
 function manta_setup_electric_moray_instances {
-    manta_download_metadata
     local size=`json -f ${METADATA} SIZE`
     if [ "$size" = "lab" ] || [ "$size" = "production" ]
     then
@@ -91,6 +90,15 @@ function manta_setup_leveldb_hash_ring {
 
 # Mainline
 
+echo "Running common setup scripts"
+manta_common_presetup
+
+echo "Adding local manifest directories"
+manta_add_manifest_dir "/opt/smartdc/electric-moray"
+
+manta_common_setup "electric-moray" 0
+
+echo "Setting up leveldb"
 manta_setup_electric_moray_instances
 manta_setup_leveldb_hash_ring
 

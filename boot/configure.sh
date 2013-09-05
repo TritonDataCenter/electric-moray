@@ -132,14 +132,6 @@ HERE
 
 # Mainline
 
-echo "Running common setup scripts"
-manta_common_presetup
-
-echo "Adding local manifest directories"
-manta_add_manifest_dir "/opt/smartdc/electric-moray"
-
-manta_common_setup "electric-moray" 0
-
 echo "Setting up Moray"
 #electric-manta_setup_moray_config
 manta_setup_electric_moray
