@@ -32,6 +32,7 @@ ZFS_PARENT_DATASET=zones/$ZONE_UUID/data
 ZFS_DATASET=$ZFS_PARENT_DATASET/electric-moray
 
 function manta_setup_electric_moray_instances {
+    manta_download_metadata
     local size=`json -f ${METADATA} SIZE`
     if [ "$size" = "lab" ] || [ "$size" = "production" ]
     then
