@@ -22,6 +22,7 @@ export PATH=$SVC_ROOT/bin:$SVC_ROOT/build/node/bin:/opt/local/bin:/usr/sbin/:/us
 export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 RING_PREFIX=/opt/smartdc/electric-moray/etc
+LEVELDB_RING=
 SERIALIZED_RING=$RING_PREFIX/ring.json
 FASH=/opt/smartdc/electric-moray/node_modules/.bin/fash
 LEVELDB_DIR_PARENT=/electric-moray/chash
@@ -40,17 +41,17 @@ function manta_setup_electric_moray_instances {
 
     if [ "$size" = "lab" ]
     then
-        cp $RING_PREFIX/lab.ring.json $SERIALIZED_RING
+        LEVELDB_RING=$RING_PREFIX/lab.ring.leveldb
     fi
 
     if [ "$size" = "production" ]
     then
-        cp $RING_PREFIX/prod.ring.json $SERIALIZED_RING
+        LEVELDB_RING=$RING_PREFIX/production.ring.leveldb
     fi
 
     if [ "$size" = "coal" ]
     then
-        cp $RING_PREFIX/coal.ring.json $SERIALIZED_RING
+        LEVELDB_RING=$RING_PREFIX/coal.ring.leveldb
     fi
 }
 
@@ -76,11 +77,12 @@ function manta_setup_leveldb_hash_ring {
 
     # try and load the topology from disk, if the load fails, we should error
     # out since we expect the topology to be there in the configure script
-    for i in "${leveldb_dirs[@]}"
+    for dir in "${leveldb_dirs[@]}"
     do
-        mkdir -p $i
+        cp -R $LEVELDB_RING $dir
         [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
-        $FASH deserialize_ring -f $SERIALIZED_RING -l $i
+        # test with get_node on the newly created ring
+        $FASH get_node -l $dir -b leveldb yunong
         [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
     done
     ZFS_SNAPSHOT=$ZFS_DATASET@$(date +%s)000
