@@ -105,7 +105,7 @@ release: all docs $(SMF_MANIFESTS)
 	    $(MTMPDIR)/root/opt/smartdc/boot/setup.sh
 	chmod 755 $(MTMPDIR)/root/opt/smartdc/electric-moray/boot/setup.sh
 	cp $(ROOT)/etc/haproxy.cfg.in $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
-	cp $(ROOT)/etc/*ring* $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
+	cp -R $(ROOT)/etc/*ring* $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
 	(cd $(MTMPDIR) && $(TAR) -jcf $(ROOT)/$(RELEASE_TARBALL) root)
 	@rm -rf $(MTMPDIR)
 
