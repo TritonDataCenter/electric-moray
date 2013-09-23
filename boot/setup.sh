@@ -46,7 +46,7 @@ function manta_setup_electric_moray_instances {
 
     if [ "$size" = "production" ]
     then
-        LEVELDB_RING=$RING_PREFIX/production.ring.leveldb
+        LEVELDB_RING=$RING_PREFIX/prod.ring.leveldb
     fi
 
     if [ "$size" = "coal" ]
