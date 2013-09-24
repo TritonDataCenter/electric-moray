@@ -25,7 +25,7 @@ ZFS_DATASET=zones/$(/usr/bin/zonename)/data/electric-moray
 
 # Mainline
 
-if [[ $(zfs get -H mounted $ZFS_DATASET | cut -f3) -eq "no" ]]; then
+if [[ $(zfs get -H mounted $ZFS_DATASET | cut -f3) == "no" ]]; then
     echo "mounting leveldb"
     zfs mount $ZFS_DATASET
 fi
