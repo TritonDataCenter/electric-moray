@@ -26,6 +26,5 @@ ZFS_DATASET=zones/$(/usr/bin/zonename)/data/electric-moray
 echo "mounting leveldb"
 
 zfs mount $ZFS_DATASET
-[[ $? -eq 0 ]] || fatal "unable to mount leveldb dataset"
 
 exit 0
