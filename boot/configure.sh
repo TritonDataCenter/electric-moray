@@ -19,12 +19,17 @@ source ${DIR}/scripts/services.sh
 export PATH=$SVC_ROOT/bin:$SVC_ROOT/build/node/bin:/opt/local/bin:/usr/sbin/:/usr/bin:$PATH
 export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
+
+
 ZFS_DATASET=zones/$(/usr/bin/zonename)/data/electric-moray
 
 # Mainline
 
-echo "mounting leveldb"
 
-zfs mount $ZFS_DATASET
+if [$(zfs get -H mounted $ZFS_DATASET | cut -f3) -eq "no" ]
+then
+    echo "mounting leveldb"
+    zfs mount $ZFS_DATASET
+fi
 
 exit 0
