@@ -34,10 +34,8 @@ REPO_MODULES	 = src/node-dummy
 SMF_MANIFESTS_IN = smf/manifests/haproxy.xml.in
 
 
-NODE_PREBUILT_VERSION=v0.10.12
-
+NODE_PREBUILT_VERSION=v0.10.18
 ifeq ($(shell uname -s),SunOS)
-	NODE_PREBUILT_CC_VERSION=4.6.2
 	NODE_PREBUILT_TAG=zone
 endif
 
