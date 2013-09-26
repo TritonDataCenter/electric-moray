@@ -39,7 +39,7 @@ NODE_PREBUILT_VERSION=v0.10.18
 # 13.2.2) even though emoray is currently on an older multiarch image.
 NODE_PREBUILT_IMAGE=e6122f7c-1543-11e3-8371-6721d2af210b
 ifeq ($(shell uname -s),SunOS)
-	NODE_PREBUILT_TAG=zone
+	NODE_PREBUILT_TAG=zone64
 endif
 
 include ./tools/mk/Makefile.defs
