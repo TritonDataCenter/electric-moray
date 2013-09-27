@@ -1,25 +1,24 @@
 {
-  "bunyan": {
-    "level": "info",
-    "syslog": {
-      "facility": "local0",
-      "type": "udp"
+    "bunyan": {
+        "level": "info",
+        "syslog": {
+            "facility": "local0",
+            "type": "udp"
+        }
+    },
+    "numWorkers": 0,
+    "audit": false,
+    "cache": {
+        "size": 5000,
+        "expiry": 60
+    },
+    "ringCfg": {
+        "leveldbCfg": {
+            "errorIfExists": false,
+            "cacheSize": 1073741824,
+            "createIfMissing": false,
+            "keyEncoding": "utf8",
+            "valueEncoding": "json"
+        }
     }
-  },
-  "numWorkers": 0,
-  "audit": false,
-  "cache": {
-    "size": 5000,
-    "expiry": 60
-  },
-  "ringCfg" : {
-    "leveldbCfg: {
-      "errorIfExists": false,
-      "cacheSize": 1073741824,
-      "createIfMissing": false,
-      "errorIfExists": false,
-      "keyEncoding": "utf8",
-      "valueEncoding": "json"
-    }
-  }
 }
