@@ -11,5 +11,15 @@
   "cache": {
     "size": 5000,
     "expiry": 60
+  },
+  "ringCfg" : {
+    "leveldbCfg: {
+      "errorIfExists": false,
+      "cacheSize": 1073741824,
+      "createIfMissing": false,
+      "errorIfExists": false,
+      "keyEncoding": "utf8",
+      "valueEncoding": "json"
+    }
   }
 }
