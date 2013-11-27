@@ -56,9 +56,7 @@ include ./tools/mk/Makefile.smf.defs
 
 RELEASE_TARBALL         := electric-moray-pkg-$(STAMP).tar.bz2
 ROOT                    := $(shell pwd)
-# can't use TMPDIR since this will conflict with TMPDIR defined in the node
-# Makefile
-MTMPDIR                  := /tmp/$(STAMP)
+RELSTAGEDIR             := /tmp/$(STAMP)
 
 #
 # Repo-specific targets
@@ -84,9 +82,9 @@ test: $(NODEUNIT)
 .PHONY: release
 release: all docs $(SMF_MANIFESTS)
 	@echo "Building $(RELEASE_TARBALL)"
-	@mkdir -p $(MTMPDIR)/root/opt/smartdc/electric-moray
-	@mkdir -p $(MTMPDIR)/root/opt/smartdc/boot
-	@mkdir -p $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
+	@mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/electric-moray
+	@mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/boot
+	@mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/etc
 	cp -r $(ROOT)/build \
 		$(ROOT)/bin \
 		$(ROOT)/boot \
@@ -96,19 +94,19 @@ release: all docs $(SMF_MANIFESTS)
 		$(ROOT)/package.json \
 		$(ROOT)/sapi_manifests \
 		$(ROOT)/smf \
-		$(MTMPDIR)/root/opt/smartdc/electric-moray/
-	mv $(MTMPDIR)/root/opt/smartdc/electric-moray/build/scripts \
-	    $(MTMPDIR)/root/opt/smartdc/electric-moray/boot
+		$(RELSTAGEDIR)/root/opt/smartdc/electric-moray/
+	mv $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/build/scripts \
+	    $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/boot
 	ln -s /opt/smartdc/electric-moray/boot/configure.sh \
-	    $(MTMPDIR)/root/opt/smartdc/boot/configure.sh
-	chmod 755 $(MTMPDIR)/root/opt/smartdc/electric-moray/boot/configure.sh
+	    $(RELSTAGEDIR)/root/opt/smartdc/boot/configure.sh
+	chmod 755 $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/boot/configure.sh
 	ln -s /opt/smartdc/electric-moray/boot/setup.sh \
-	    $(MTMPDIR)/root/opt/smartdc/boot/setup.sh
-	chmod 755 $(MTMPDIR)/root/opt/smartdc/electric-moray/boot/setup.sh
-	cp $(ROOT)/etc/haproxy.cfg.in $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
-	cp -R $(ROOT)/etc/*ring* $(MTMPDIR)/root/opt/smartdc/electric-moray/etc
-	(cd $(MTMPDIR) && $(TAR) -jcf $(ROOT)/$(RELEASE_TARBALL) root)
-	@rm -rf $(MTMPDIR)
+	    $(RELSTAGEDIR)/root/opt/smartdc/boot/setup.sh
+	chmod 755 $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/boot/setup.sh
+	cp $(ROOT)/etc/haproxy.cfg.in $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/etc
+	cp -R $(ROOT)/etc/*ring* $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/etc
+	(cd $(RELSTAGEDIR) && $(TAR) -jcf $(ROOT)/$(RELEASE_TARBALL) root)
+	@rm -rf $(RELSTAGEDIR)
 
 .PHONY: publish
 publish: release
