@@ -14,20 +14,20 @@
         "bunyan-syslog": "0.2.1",
         "clone": "0.1.9",
         "dtrace-provider": "0.2.8",
-        "fash": "2.2.0",
+        "fash": "2.3.0",
         "fast": "0.3.8",
         "ldapjs": "0.6.3",
         "moray": "git+ssh://git@git.joyent.com:node-moray.git#74af2a4",
         "node-uuid": "1.4.0",
         "panic": "0.2.1",
         "posix-getopt": "1.0.0",
+        "vasync": "1.4.3",
         "verror": "1.3.5",
         "xtend": "2.0.6"
     },
     "devDependencies": {
         "deep-equal": "0.0.0",
-        "nodeunit": "0.8.1",
-        "vasync": "1.3.3"
+        "nodeunit": "0.8.1"
     },
     "directories": {
         "bin": "./bin",

@@ -34,7 +34,7 @@ REPO_MODULES	 = src/node-dummy
 SMF_MANIFESTS_IN = smf/manifests/haproxy.xml.in
 
 
-NODE_PREBUILT_VERSION=v0.10.18
+NODE_PREBUILT_VERSION=v0.10.25
 # Use the sdcnode built on 'e6122f7c-1543-11e3-8371-6721d2af210b' (multiarch
 # 13.2.2) even though emoray is currently on an older multiarch image.
 NODE_PREBUILT_IMAGE=e6122f7c-1543-11e3-8371-6721d2af210b
@@ -77,6 +77,7 @@ CLEAN_FILES += $(TAP) ./node_modules
 test: $(NODEUNIT)
 	$(NODEUNIT) test/buckets.test.js | $(BUNYAN)
 	$(NODEUNIT) test/objects.test.js | $(BUNYAN)
+	$(NODEUNIT) test/sql.test.js | $(BUNYAN)
 	$(NODEUNIT) test/integ.test.js | $(BUNYAN)
 
 .PHONY: release
