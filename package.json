@@ -17,7 +17,7 @@
         "fash": "2.3.0",
         "fast": "0.3.8",
         "ldapjs": "0.6.3",
-        "moray": "git+ssh://git@git.joyent.com:node-moray.git#74af2a4",
+        "moray": "git+ssh://git@git.joyent.com:node-moray.git#f019fe30512b7c8e1c75de906128446f60b7fd44",
         "node-uuid": "1.4.0",
         "panic": "0.2.1",
         "posix-getopt": "1.0.0",
