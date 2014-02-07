@@ -34,10 +34,9 @@ REPO_MODULES	 = src/node-dummy
 SMF_MANIFESTS_IN = smf/manifests/haproxy.xml.in
 
 
-NODE_PREBUILT_VERSION=v0.10.21
-# Use the sdcnode built on 'e6122f7c-1543-11e3-8371-6721d2af210b' (multiarch
-# 13.2.2) even though emoray is currently on an older multiarch image.
-NODE_PREBUILT_IMAGE=e6122f7c-1543-11e3-8371-6721d2af210b
+NODE_PREBUILT_VERSION=v0.10.25
+# Allow emoray builds on a VM other than multiarch/13.3.0.
+NODE_PREBUILT_IMAGE=4aec529c-55f9-11e3-868e-a37707fcbe86
 ifeq ($(shell uname -s),SunOS)
 	NODE_PREBUILT_TAG=zone64
 endif
