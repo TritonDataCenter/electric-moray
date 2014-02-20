@@ -35,8 +35,8 @@ SMF_MANIFESTS_IN = smf/manifests/haproxy.xml.in
 
 
 NODE_PREBUILT_VERSION=v0.10.25
-# Allow emoray builds on a VM other than multiarch/13.3.0.
-NODE_PREBUILT_IMAGE=4aec529c-55f9-11e3-868e-a37707fcbe86
+# Allow emoray builds on a VM other than sdc-multiarch/13.3.1.
+NODE_PREBUILT_IMAGE=b4bdc598-8939-11e3-bea4-8341f6861379
 ifeq ($(shell uname -s),SunOS)
 	NODE_PREBUILT_TAG=zone64
 endif
