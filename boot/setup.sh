@@ -21,8 +21,6 @@ source ${DIR}/scripts/services.sh
 export PATH=$SVC_ROOT/bin:$SVC_ROOT/build/node/bin:/opt/local/bin:/usr/sbin/:/usr/bin:$PATH
 export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
-RING_PREFIX=/opt/smartdc/electric-moray/etc
-SERIALIZED_RING=$RING_PREFIX/ring.json
 FASH=/opt/smartdc/electric-moray/node_modules/.bin/fash
 ELECTRIC_MORAY_INSTANCES=4
 LEVELDB_DIR_PARENT=/electric-moray/chash
