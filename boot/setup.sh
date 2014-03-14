@@ -30,10 +30,10 @@ SAPI_URL=$(mdata-get SAPI_URL)
 MANTA_APPLICATION=$(curl --connect-timeout 10 -sS -i -H accept:application/json \
     -H content-type:application/json --url $SAPI_URL/applications?name=manta)
 [[ -n $MANTA_APPLICATION ]] || fatal "no MANTA_APPLICATION found"
-HASH_RING_IMAGE= cat $MANTA_APPLICATION | json -Ha metadata.HASH_RING_IMAGE
+HASH_RING_IMAGE=$(echo $MANTA_APPLICATION | json -Ha metadata.HASH_RING_IMAGE)
 [[ -n $HASH_RING_IMAGE ]] || fatal "no HASH_RING_IMAGE found"
 HASH_RING_FILE=/var/tmp/$(uuid -v4).tar.gz
-export SDC_IMGADM_URL= $(cat $MANTA_APPLICATION | json -Ha metadata.IMGAPI_SERVICE)
+export SDC_IMGADM_URL= $(echo $MANTA_APPLICATION | json -Ha metadata.IMGAPI_SERVICE)
 [[ -n $SDC_IMGADM_URL ]] || fatal "no SDC_IMGADM_URL found"
 ZONE_UUID=$(/usr/bin/zonename)
 ZFS_PARENT_DATASET=zones/$ZONE_UUID/data
