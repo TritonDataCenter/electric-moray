@@ -22,40 +22,33 @@ export PATH=$SVC_ROOT/bin:$SVC_ROOT/build/node/bin:/opt/local/bin:/usr/sbin/:/us
 export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 RING_PREFIX=/opt/smartdc/electric-moray/etc
-LEVELDB_RING=
 SERIALIZED_RING=$RING_PREFIX/ring.json
 FASH=/opt/smartdc/electric-moray/node_modules/.bin/fash
+ELECTRIC_MORAY_INSTANCES=4
 LEVELDB_DIR_PARENT=/electric-moray/chash
 LEVELDB_DIR=$LEVELDB_DIR_PARENT/leveldb-
-ELECTRIC_MORAY_INSTANCES=1
+SAPI_URL=$(mdata-get SAPI_URL)
+[[ -n $SAPI_URL ]] || fatal "no SAPI_URL found"
+MANTA_APPLICATION=$(curl --connect-timeout 10 -sS -i -H accept:application/json \
+    -H content-type:application/json --url $SAPI_URL/applications?name=manta)
+[[ -n $MANTA_APPLICATION ]] || fatal "no MANTA_APPLICATION found"
+HASH_RING_IMAGE=$(curl --connect-timeout 10 -sS -i -H accept:application/json \
+    -H content-type:application/json --url $SAPI_URL/applications/$MANTA_APPLICATION | json -Ha metadata.HASH_RING_IMAGE)
+[[ -n $HASH_RING_IMAGE ]] || fatal "no HASH_RING_IMAGE found"
+HASH_RING_FILE=/var/tmp/$(uuid -v4).tar.gz
+export SDC_IMGADM_URL=$(curl --connect-timeout 10 -sS -i -H accept:application/json \
+    -H content-type:application/json --url $SAPI_URL/applications/$MANTA_APPLICATION | json -Ha metadata.IMGAPI_SERVICE)
+[[ -n $SDC_IMGADM_URL ]] || fatal "no SDC_IMGADM_URL found"
 ZONE_UUID=$(/usr/bin/zonename)
 ZFS_PARENT_DATASET=zones/$ZONE_UUID/data
 ZFS_DATASET=$ZFS_PARENT_DATASET/electric-moray
 
-function manta_setup_electric_moray_instances {
-    local size=`json -f ${METADATA} SIZE`
-    if [ "$size" = "lab" ] || [ "$size" = "production" ]
-    then
-        ELECTRIC_MORAY_INSTANCES=4
-    fi
-
-    if [ "$size" = "lab" ]
-    then
-        LEVELDB_RING=$RING_PREFIX/lab.ring.leveldb
-    fi
-
-    if [ "$size" = "production" ]
-    then
-        LEVELDB_RING=$RING_PREFIX/prod.ring.leveldb
-    fi
-
-    if [ "$size" = "coal" ]
-    then
-        LEVELDB_RING=$RING_PREFIX/coal.ring.leveldb
-    fi
-}
-
 function manta_setup_leveldb_hash_ring {
+    # get the hash ring image
+    /opt/electric-moray/node_modules/.bin/sdc-imgadm get-file -o $HASH_RING_FILE
+    local leveldb_ring_parent_dir=/var/tmp/$(uuid -v4)
+    local leveldb_ring=$leveldb_ring_parent_dir/hash_ring
+    tar -xzf $HASH_RING_FILE -C $leveldb_ring_parent_dir
     # create the dataset
     zfs create -o canmount=noauto $ZFS_DATASET
     [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
@@ -79,7 +72,7 @@ function manta_setup_leveldb_hash_ring {
     # out since we expect the topology to be there in the configure script
     for dir in "${leveldb_dirs[@]}"
     do
-        cp -R $LEVELDB_RING $dir
+        cp -R $leveldb_ring $dir
         [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
         # test with get_node on the newly created ring
         $FASH get_node -l $dir -b leveldb yunong
@@ -91,15 +84,9 @@ function manta_setup_leveldb_hash_ring {
 }
 
 function manta_setup_electric_moray {
-    local electric_moray_instances=1
-    local size=`json -f ${METADATA} SIZE`
-    if [ "$size" = "lab" ] || [ "$size" = "production" ]; then
-        electric_moray_instances=4
-    fi
-
     #Build the list of ports.  That'll be used for everything else.
     local ports
-    for (( i=1; i<=$electric_moray_instances; i++ )); do
+    for (( i=1; i<=$ELECTRIC_MORAY_INSTANCES; i++ )); do
         ports[$i]=`expr 2020 + $i`
     done
 
@@ -212,7 +199,6 @@ manta_add_manifest_dir "/opt/smartdc/electric-moray"
 manta_common_setup "electric-moray" 0
 
 echo "Setting up leveldb"
-manta_setup_electric_moray_instances
 manta_setup_leveldb_hash_ring
 
 echo "Setting up e-moray"
