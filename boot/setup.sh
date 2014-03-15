@@ -27,6 +27,7 @@ LEVELDB_DIR_PARENT=/electric-moray/chash
 LEVELDB_DIR=$LEVELDB_DIR_PARENT/leveldb-
 SAPI_URL=$(mdata-get SAPI_URL)
 [[ -n $SAPI_URL ]] || fatal "no SAPI_URL found"
+sleep 10 # wait 10 seconds for dns to setup, this is so lame but otherwise will resolve in dns resolution errors.
 MANTA_APPLICATION=$(curl --connect-timeout 10 -sS -i -H accept:application/json \
     -H content-type:application/json --url $SAPI_URL/applications?name=manta)
 [[ -n $MANTA_APPLICATION ]] || fatal "no MANTA_APPLICATION found"
