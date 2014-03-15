@@ -42,7 +42,7 @@ ZFS_DATASET=$ZFS_PARENT_DATASET/electric-moray
 
 function manta_setup_leveldb_hash_ring {
     # get the hash ring image
-    /opt/smartdc/electric-moray/node_modules/.bin/sdc-imgadm get-file -o $HASH_RING_FILE
+    /opt/smartdc/electric-moray/node_modules/.bin/sdc-imgadm get-file $HASH_RING_IMAGE -o $HASH_RING_FILE
     local leveldb_ring_parent_dir=/var/tmp/$(uuid -v4)
     local leveldb_ring=$leveldb_ring_parent_dir/hash_ring
     tar -xzf $HASH_RING_FILE -C $leveldb_ring_parent_dir
