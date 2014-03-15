@@ -34,7 +34,7 @@ MANTA_APPLICATION=$(curl --connect-timeout 10 -sS -i -H accept:application/json 
 HASH_RING_IMAGE=$(echo $MANTA_APPLICATION | json metadata.HASH_RING_IMAGE)
 [[ -n $HASH_RING_IMAGE ]] || fatal "no HASH_RING_IMAGE found"
 HASH_RING_FILE=/var/tmp/$(uuid -v4).tar.gz
-export SDC_IMGADM_URL= $(echo $MANTA_APPLICATION | json metadata.IMGAPI_SERVICE)
+export SDC_IMGADM_URL=$(echo $MANTA_APPLICATION | json metadata.IMGAPI_SERVICE)
 [[ -n $SDC_IMGADM_URL ]] || fatal "no SDC_IMGADM_URL found"
 ZONE_UUID=$(/usr/bin/zonename)
 ZFS_PARENT_DATASET=zones/$ZONE_UUID/data
@@ -42,7 +42,7 @@ ZFS_DATASET=$ZFS_PARENT_DATASET/electric-moray
 
 function manta_setup_leveldb_hash_ring {
     # get the hash ring image
-    /opt/electric-moray/node_modules/.bin/sdc-imgadm get-file -o $HASH_RING_FILE
+    /opt/smartdc/electric-moray/node_modules/.bin/sdc-imgadm get-file -o $HASH_RING_FILE
     local leveldb_ring_parent_dir=/var/tmp/$(uuid -v4)
     local leveldb_ring=$leveldb_ring_parent_dir/hash_ring
     tar -xzf $HASH_RING_FILE -C $leveldb_ring_parent_dir
