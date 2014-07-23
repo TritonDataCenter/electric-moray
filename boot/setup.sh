@@ -47,6 +47,10 @@ function manta_setup_leveldb_hash_ring {
     local leveldb_ring=$leveldb_ring_parent_dir/hash_ring
     mkdir -p $leveldb_ring_parent_dir
     tar -xzf $HASH_RING_FILE -C $leveldb_ring_parent_dir
+    # delete the dataset if it already exists
+    set +o errexit
+    zfs destroy -rf $ZFS_DATASET
+    set -o errexit
     # create the dataset
     zfs create -o canmount=noauto $ZFS_DATASET
     [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
