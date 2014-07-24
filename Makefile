@@ -61,7 +61,7 @@ RELSTAGEDIR             := /tmp/$(STAMP)
 # Repo-specific targets
 #
 .PHONY: all
-all: $(SMF_MANIFESTS) deps scripts
+all: $(SMF_MANIFESTS) deps manta-scripts
 
 .PHONY: deps
 deps: | $(REPO_DEPS) $(NPM_EXEC)
@@ -71,6 +71,11 @@ $(NODEUNIT): | $(NPM_EXEC)
 	$(NPM) install
 
 CLEAN_FILES += $(TAP) ./node_modules
+
+.PHONY: manta-scripts
+manta-scripts: deps/manta-scripts/.git
+	mkdir -p $(BUILD)/scripts
+	cp deps/manta-scripts/*.sh $(BUILD)/scripts
 
 .PHONY: test
 test: $(NODEUNIT)
