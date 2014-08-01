@@ -22,7 +22,6 @@ export PATH=$SVC_ROOT/bin:$SVC_ROOT/build/node/bin:/opt/local/bin:/usr/sbin/:/us
 export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 FASH=/opt/smartdc/electric-moray/node_modules/.bin/fash
-ELECTRIC_MORAY_INSTANCES=4
 LEVELDB_DIR_PARENT=/electric-moray/chash
 LEVELDB_DIR=$LEVELDB_DIR_PARENT/leveldb-
 SAPI_URL=$(mdata-get SAPI_URL)
@@ -39,6 +38,15 @@ export SDC_IMGADM_URL=$(echo $MANTA_APPLICATION | json metadata.IMGAPI_SERVICE)
 ZONE_UUID=$(/usr/bin/zonename)
 ZFS_PARENT_DATASET=zones/$ZONE_UUID/data
 ZFS_DATASET=$ZFS_PARENT_DATASET/electric-moray
+
+function manta_setup_determine_instances {
+    ELECTRIC_MORAY_INSTANCES=1
+    local size=`json -f ${METADATA} SIZE`
+    if [ "$size" = "lab" ] || [ "$size" = "production" ]
+    then
+        ELECTRIC_MORAY_INSTANCES=4
+    fi
+}
 
 function manta_setup_leveldb_hash_ring {
     # get the hash ring image
@@ -199,6 +207,8 @@ echo "Adding local manifest directories"
 manta_add_manifest_dir "/opt/smartdc/electric-moray"
 
 manta_common_setup "electric-moray" 0
+
+manta_setup_determine_instances
 
 echo "Setting up leveldb"
 manta_setup_leveldb_hash_ring
