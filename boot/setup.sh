@@ -39,6 +39,15 @@ ZONE_UUID=$(/usr/bin/zonename)
 ZFS_PARENT_DATASET=zones/$ZONE_UUID/data
 ZFS_DATASET=$ZFS_PARENT_DATASET/electric-moray
 
+function manta_hack_syslog_conf {
+    # Hack.  See MANTA-2165
+    local conf=/etc/syslog.conf
+    if [[ -e $conf ]]; then
+        sed -ir 's/\/var\/log\/authlog/\/var\/log\/auth\.log/' $conf
+        sed -ir 's/\/var\/log\/maillog/\/var\/log\/postfix\.log/' $conf
+    fi
+}
+
 function manta_setup_determine_instances {
     ELECTRIC_MORAY_INSTANCES=1
     local size=`json -f ${METADATA} SIZE`
@@ -199,6 +208,9 @@ HERE
 }
 
 # Mainline
+
+echo "Modifying syslog.conf"
+manta_hack_syslog_conf
 
 echo "Running common setup scripts"
 manta_common_presetup
