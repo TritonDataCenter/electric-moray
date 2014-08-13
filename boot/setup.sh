@@ -33,7 +33,7 @@ MANTA_APPLICATION=$(curl --connect-timeout 10 -sS -i -H accept:application/json 
 HASH_RING_IMAGE=$(echo $MANTA_APPLICATION | json metadata.HASH_RING_IMAGE)
 [[ -n $HASH_RING_IMAGE ]] || fatal "no HASH_RING_IMAGE found"
 HASH_RING_FILE=/var/tmp/$(uuid -v4).tar.gz
-export SDC_IMGADM_URL=$(echo $MANTA_APPLICATION | json metadata.IMGAPI_SERVICE)
+export SDC_IMGADM_URL=$(echo $MANTA_APPLICATION | json metadata.HASH_RING_IMGAPI_SERVICE)
 [[ -n $SDC_IMGADM_URL ]] || fatal "no SDC_IMGADM_URL found"
 ZONE_UUID=$(/usr/bin/zonename)
 ZFS_PARENT_DATASET=zones/$ZONE_UUID/data
