@@ -28,7 +28,7 @@ SAPI_URL=$(mdata-get SAPI_URL)
 [[ -n $SAPI_URL ]] || fatal "no SAPI_URL found"
 sleep 10 # wait 10 seconds for dns to setup, this is so lame but otherwise will resolve in dns resolution errors.
 MANTA_APPLICATION=$(curl --connect-timeout 10 -sS -i -H accept:application/json \
-    -H content-type:application/json --url $SAPI_URL/applications?name=manta | json -Ha)
+    -H content-type:application/json --url $SAPI_URL/applications?name=manta&include_master=true | json -Ha)
 [[ -n $MANTA_APPLICATION ]] || fatal "no MANTA_APPLICATION found"
 HASH_RING_IMAGE=$(echo $MANTA_APPLICATION | json metadata.HASH_RING_IMAGE)
 [[ -n $HASH_RING_IMAGE ]] || fatal "no HASH_RING_IMAGE found"
