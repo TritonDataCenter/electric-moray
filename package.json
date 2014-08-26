@@ -36,5 +36,6 @@
     },
     "scripts": {
         "test": "make test"
-    }
+    },
+    "license": "MPL-2.0"
 }
