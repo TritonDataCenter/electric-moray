@@ -32,7 +32,6 @@ JSONTOOL	:= ./node_modules/.bin/json
 #
 # Files
 #
-DOC_FILES	 = index.restdown
 JS_FILES	:= $(shell ls *.js) $(shell find lib test -name '*.js')
 JSL_CONF_NODE	 = tools/jsl.node.conf
 JSL_FILES_NODE   = $(JS_FILES)
@@ -93,7 +92,7 @@ test: $(NODEUNIT)
 	$(NODEUNIT) test/integ.test.js | $(BUNYAN)
 
 .PHONY: release
-release: all docs $(SMF_MANIFESTS)
+release: all $(SMF_MANIFESTS)
 	@echo "Building $(RELEASE_TARBALL)"
 	@mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/electric-moray
 	@mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/boot
