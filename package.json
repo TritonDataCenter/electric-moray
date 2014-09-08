@@ -17,7 +17,7 @@
         "fash": "2.3.0",
         "fast": "0.3.8",
         "ldapjs": "0.6.3",
-        "imgapi-cli": "git+ssh://git@github.com:joyent/imgapi-cli.git#db3efc1",
+        "imgapi-cli": "git+ssh://git@github.com:joyent/sdc-imgapi-cli.git#db3efc1",
         "moray": "git+ssh://git@github.com:joyent/node-moray.git#771b4759f6",
         "node-uuid": "1.4.0",
         "panic": "0.2.1",
