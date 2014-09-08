@@ -116,7 +116,6 @@ release: all $(SMF_MANIFESTS)
 	    $(RELSTAGEDIR)/root/opt/smartdc/boot/setup.sh
 	chmod 755 $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/boot/setup.sh
 	cp $(ROOT)/etc/haproxy.cfg.in $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/etc
-	cp -R $(ROOT)/etc/*ring* $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/etc
 	(cd $(RELSTAGEDIR) && $(TAR) -jcf $(ROOT)/$(RELEASE_TARBALL) root)
 	@rm -rf $(RELSTAGEDIR)
 
