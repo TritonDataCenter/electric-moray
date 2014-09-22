@@ -10,7 +10,10 @@
 
 # electric-moray
 
+This repository is part of the Joyent Manta project.  For contribution
+guidelines, issues, and general documentation, visit the main
+[Manta](http://github.com/joyent/manta) project page.
+
 Node-based service that provides the same interface as
 [Moray](https://github.com/joyent/moray), but which directs requests to one or
 more Moray+Manatee shards based on hashing of the Moray key.
-
