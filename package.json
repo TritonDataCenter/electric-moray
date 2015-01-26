@@ -1,7 +1,7 @@
 {
     "name": "electric-moray",
     "description": "moray proxy service",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "Joyent (joyent.com)",
     "private": true,
     "repository": {
@@ -29,6 +29,9 @@
     "devDependencies": {
         "deep-equal": "0.0.0",
         "nodeunit": "0.8.1"
+    },
+    "sdcDependencies": {
+        "config-agent": ">=1.2.0"
     },
     "directories": {
         "bin": "./bin",
