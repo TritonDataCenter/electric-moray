@@ -39,6 +39,7 @@ JSSTYLE_FILES	 = $(JS_FILES)
 JSSTYLE_FLAGS    = -f tools/jsstyle.conf
 REPO_MODULES	 = src/node-dummy
 SMF_MANIFESTS_IN = smf/manifests/haproxy.xml.in
+BOOTSTRAP_MANIFESTS = sapi_manifests/registrar/template
 
 
 NODE_PREBUILT_VERSION=v0.10.25
@@ -77,7 +78,7 @@ deps: | $(REPO_DEPS) $(NPM_EXEC)
 $(NODEUNIT): | $(NPM_EXEC)
 	$(NPM) install
 
-CLEAN_FILES += $(TAP) ./node_modules
+CLEAN_FILES += $(TAP) ./node_modules $(BOOTSTRAP_MANIFESTS)
 
 .PHONY: manta-scripts
 manta-scripts: deps/manta-scripts/.git
@@ -92,7 +93,7 @@ test: $(NODEUNIT)
 	$(NODEUNIT) test/integ.test.js | $(BUNYAN)
 
 .PHONY: release
-release: all $(SMF_MANIFESTS)
+release: all $(SMF_MANIFESTS) $(BOOTSTRAP_MANIFESTS)
 	@echo "Building $(RELEASE_TARBALL)"
 	@mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/electric-moray
 	@mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/boot
@@ -118,6 +119,9 @@ release: all $(SMF_MANIFESTS)
 	cp $(ROOT)/etc/haproxy.cfg.in $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/etc
 	(cd $(RELSTAGEDIR) && $(TAR) -jcf $(ROOT)/$(RELEASE_TARBALL) root)
 	@rm -rf $(RELSTAGEDIR)
+
+sapi_manifests/registrar/template: sapi_manifests/registrar/template.in
+	sed -e 's/@@PORTS@@/2020/g' $< > $@
 
 .PHONY: publish
 publish: release
