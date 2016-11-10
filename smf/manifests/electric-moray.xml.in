@@ -44,7 +44,7 @@
         <exec_method
             type="method"
             name="start"
-            exec="node main.js -f etc/config.json -r %{electric-moray/ring-location} -p %{electric-moray/port} &amp;"
+            exec="node --abort-on-uncaught-exception main.js -f etc/config.json -r %{electric-moray/ring-location} -p %{electric-moray/port} &amp;"
             timeout_seconds="30">
             <method_context working_directory="/opt/smartdc/electric-moray">
                 <method_credential user="root" group="nobody" />

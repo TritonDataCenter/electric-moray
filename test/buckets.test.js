@@ -243,7 +243,6 @@ test('update bucket (versioned not ok 1 -> 0)', function (t) {
         c.updateBucket(b, cfg, function (err2) {
             t.ok(err2);
             if (err2) {
-                t.equal(err2.name, 'VError');
                 t.ok(err2.message);
                 t.ok(err2.ase_errors.length >= 1);
                 err2.ase_errors.forEach(function (err3) {
@@ -280,7 +279,6 @@ test('update bucket (versioned not ok 2 -> 1)', function (t) {
         c.updateBucket(b, cfg, function (err2) {
             t.ok(err2);
             if (err2) {
-                t.equal(err2.name, 'VError');
                 t.ok(err2.message);
                 t.ok(err2.ase_errors.length >= 1);
                 err2.ase_errors.forEach(function (err3) {
@@ -299,7 +297,6 @@ test('create bucket bad index type', function (t) {
     var c = this.client;
     c.createBucket(b, {index: {foo: 'foo'}}, function (err) {
         t.ok(err);
-        t.equal(err.name, 'VError');
         t.ok(err.message);
         t.ok(err.ase_errors.length >= 1);
         err.ase_errors.forEach(function (err2) {
@@ -316,7 +313,6 @@ test('create bucket triggers not function', function (t) {
     var c = this.client;
     c.createBucket(b, {pre: ['foo']}, function (err) {
         t.ok(err);
-        t.equal(err.name, 'VError');
         t.ok(err.message);
         t.ok(err.ase_errors.length >= 1);
         err.ase_errors.forEach(function (err2) {
