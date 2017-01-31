@@ -89,6 +89,7 @@ manta-scripts: deps/manta-scripts/.git
 test: $(NODEUNIT)
 	$(NODEUNIT) test/buckets.test.js | $(BUNYAN)
 	$(NODEUNIT) test/objects.test.js | $(BUNYAN)
+	$(NODEUNIT) test/batch.test.js | $(BUNYAN)
 	$(NODEUNIT) test/sql.test.js | $(BUNYAN)
 	$(NODEUNIT) test/integ.test.js | $(BUNYAN)
 
