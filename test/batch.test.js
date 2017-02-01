@@ -91,6 +91,52 @@ function runBadBatch(c, t, requests, expMsg) {
 
 
 /*
+ * Similar to runBadBatch, but mean to allow for testing the server-side
+ * validation of fields. It cheats a little and digs into the client so
+ * that it can perform the fast RPCs itself.
+ */
+function runBadBatchFast(c, t, requests, expMsg) {
+    var mod_moray_rpc = require('moray/lib/rpc');
+    var rpcctx, release, log;
+
+    function done(bErr, meta) {
+        t.ok(bErr, 'error expected');
+        if (bErr) {
+            t.equal(bErr.message, expMsg, 'correct error message');
+        }
+
+        t.equal(meta, null, 'no return value');
+
+        t.end();
+    }
+
+    rpcctx = c.ctxCreateForCallback(done);
+
+    if (rpcctx) {
+        release = c.makeReleaseCb(rpcctx, done);
+        log = rpcctx.createLog({ });
+        mod_moray_rpc.rpcCommonBufferData({
+            rpcctx: rpcctx,
+            log: log,
+            rpcmethod: 'batch',
+            rpcargs: [ requests, {} ]
+        }, function (err, data) {
+            if (!err && data.length > 1) {
+                err = new VError('expected at most 1 data message, found %d',
+                    data.length);
+            }
+
+            if (err) {
+                release(err);
+            } else {
+                release(null, data.length === 0 ? {} : data[0]);
+            }
+        });
+    }
+}
+
+
+/*
  * Initialize an empty object to be manipulated by a 'delete' request.
  */
 function initEmptyObject(c, r, cb) {
@@ -444,6 +490,50 @@ test('same key transforms to different values', function (t) {
 test('bad requests array: empty array', function (t) {
     runBadBatch(this.client, t, [],
         'must specify an array with at least one request');
+});
+
+
+test('bad requests array: non-array (string)', function (t) {
+    runBadBatchFast(this.client, t, 'hello',
+        'must specify an array with at least one request');
+});
+
+
+test('bad requests array: non-array (number)', function (t) {
+    runBadBatchFast(this.client, t, 5,
+        'must specify an array with at least one request');
+});
+
+
+test('bad operation object: missing "key"', function (t) {
+    var requests = [
+        {
+            operation: 'put',
+            bucket: this.bucket1,
+            value: {
+                foo: 'bar'
+            }
+        }
+    ];
+
+    runBadBatchFast(this.client, t, requests,
+        'all batch requests must have a "key"');
+});
+
+
+test('bad operation object: missing "bucket"', function (t) {
+    var requests = [
+        {
+            operation: 'put',
+            key: path.join('/', uuid.v4(), 'stor', uuid.v4()),
+            value: {
+                foo: 'bar'
+            }
+        }
+    ];
+
+    runBadBatchFast(this.client, t, requests,
+        'all batch requests must have a "bucket"');
 });
 
 
