@@ -17,6 +17,7 @@ NAME = electric-moray
 #
 # Files
 #
+DOC_FILES =	 	index.md
 JS_FILES :=		$(wildcard *.js) $(shell find lib test -name '*.js')
 JSL_CONF_NODE =		tools/jsl.node.conf
 JSL_FILES_NODE =	$(JS_FILES)
