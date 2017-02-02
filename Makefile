@@ -32,6 +32,7 @@ JSONTOOL	:= ./node_modules/.bin/json
 #
 # Files
 #
+DOC_FILES	 = index.md
 JS_FILES	:= $(shell ls *.js) $(shell find lib test -name '*.js')
 JSL_CONF_NODE	 = tools/jsl.node.conf
 JSL_FILES_NODE   = $(JS_FILES)
