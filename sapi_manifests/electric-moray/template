@@ -12,6 +12,11 @@
         "size": 5000,
         "expiry": 60
     },
+    "morayOptions": {
+        "cueballOptions": {
+            "resolvers": [ "nameservice.{{DOMAIN_NAME}}" ]
+        }
+    },
     "ringCfg": {
         "leveldbCfg": {
             "errorIfExists": false,
