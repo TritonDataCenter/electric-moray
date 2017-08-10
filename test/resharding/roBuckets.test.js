@@ -5,7 +5,14 @@
  */
 
 /*
- * Copyright (c) 2014, Joyent, Inc.
+ * Copyright (c) 2017, Joyent, Inc.
+ */
+
+/*
+ * NOTE: This test program appears to require external action to be taken on
+ * the electric-moray instance under test.  At least one test depends on a
+ * failure due to a vnode having been marked read-only, which is apparently an
+ * exercise left to the engineer driving the test.
  */
 
 var clone = require('clone');

@@ -1,4 +1,5 @@
 /node_modules
+/make_stamps
 /tmp
 build
 docs/*.json
