@@ -102,8 +102,8 @@ function manta_setup_leveldb_hash_ring {
     do
         cp -R $leveldb_ring $dir
         [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
-        # test with get_node on the newly created ring
-        $FASH get_node -l $dir -b leveldb yunong
+        # test with get-node on the newly created ring
+        $FASH get-node -l $dir -b leveldb yunong
         [[ $? -eq 0 ]] || fatal "unable to setup leveldb"
     done
     ZFS_SNAPSHOT=$ZFS_DATASET@$(date +%s)000

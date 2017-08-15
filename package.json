@@ -14,7 +14,7 @@
         "bunyan-syslog": "0.2.2",
         "clone": "0.1.9",
         "dtrace-provider": "0.2.8",
-        "fash": "2.3.0",
+        "fash": "2.4.1",
         "fast": "0.3.8",
         "ldapjs": "0.6.3",
         "imgapi-cli": "git+https://github.com/joyent/sdc-imgapi-cli.git#db3efc1",
