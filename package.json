@@ -18,7 +18,7 @@
         "fast": "0.3.8",
         "ldapjs": "0.6.3",
         "imgapi-cli": "git+https://github.com/joyent/sdc-imgapi-cli.git#db3efc1",
-        "moray": "^3.0.0",
+        "moray": "file:../node-moray",
         "node-uuid": "1.4.0",
         "posix-getopt": "^1.0.0",
         "strsplit": "1.0.0",
