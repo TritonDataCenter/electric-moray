@@ -15,7 +15,9 @@ var assert = require('assert-plus');
 var bsyslog = require('bunyan-syslog');
 var bunyan = require('bunyan');
 var clone = require('clone');
+var jsprim = require('jsprim');
 var getopt = require('posix-getopt');
+var VError = require('verror');
 var extend = require('xtend');
 
 var app = require('./lib');
@@ -24,9 +26,14 @@ var app = require('./lib');
 
 ///--- Globals
 
+var MIN_PORT = 1;
+var MAX_PORT = 65535;
+
 var DEFAULTS = {
     file: process.cwd() + '/etc/config.json',
-    port: 2020
+    port: 2020,
+    monitorPort: 3020,
+    bindip: '0.0.0.0'
 };
 var NAME = 'electric-moray';
 var LOG_SERIALIZERS = {
@@ -83,10 +90,28 @@ function setupLogger(config) {
 }
 
 
+function parsePort(str) {
+    var port = jsprim.parseInteger(str);
+
+    if (port instanceof Error) {
+        LOG.fatal({ port: str }, 'Invalid port - failed to parse');
+        throw new VError(port, 'Invalid port %j', str);
+    }
+
+    if (port < MIN_PORT || port > MAX_PORT) {
+        LOG.fatal({ port: str }, 'Invalid port - out of range');
+        throw new VError(port, 'Invalid port %j, should be in range %d-%d',
+                str, MIN_PORT, MAX_PORT);
+    }
+
+    return port;
+}
+
+
 function parseOptions() {
     var option;
     var opts = {};
-    var parser = new getopt.BasicParser('cvf:r:p:', process.argv);
+    var parser = new getopt.BasicParser('cvf:r:p:k:', process.argv);
 
     while ((option = parser.getopt()) !== undefined) {
         switch (option.option) {
@@ -100,13 +125,10 @@ function parseOptions() {
                 opts.ringLocation = option.optarg;
                 break;
             case 'p':
-                opts.port = parseInt(option.optarg, 10);
-                if (isNaN(opts.port)) {
-                    LOG.fatal({
-                        port: option.optarg
-                    }, 'Invalid port.');
-                    process.exit(1);
-                }
+                opts.port = parsePort(option.optarg);
+                break;
+            case 'k':
+                opts.monitorPort = parsePort(option.optarg);
                 break;
             case 'v':
                 // Allows us to set -vvv -> this little hackery just ensures
