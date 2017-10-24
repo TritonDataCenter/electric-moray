@@ -10,7 +10,9 @@
 
 var bunyan = require('bunyan');
 var deepEqual = require('deep-equal');
+var fast = require('fast');
 var moray = require('moray'); // client
+var net = require('net');
 
 
 
@@ -76,6 +78,32 @@ module.exports = {
                         log: module.exports.createLogger()
                 });
                 return (client);
+        },
+
+        makeFastRequest: function makeFastRequest(opts, cb) {
+                var host, port;
+                host = (process.env.MORAY_IP || '127.0.0.1');
+                port = (parseInt(process.env.MORAY_PORT, 10) || 2020);
+
+                var socket = net.connect(port, host);
+
+                socket.on('error', cb);
+
+                socket.on('connect', function () {
+                    socket.removeListener('error', cb);
+                    var client = new fast.FastClient({
+                        log: opts.log,
+                        nRecentRequests: 100,
+                        transport: socket
+                    });
+
+                    client.rpcBufferAndCallback(opts.call,
+                        function (err, data, ndata) {
+                        client.detach();
+                        socket.destroy();
+                        cb(err, data, ndata);
+                    });
+                });
         }
 
 };
