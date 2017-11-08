@@ -60,7 +60,7 @@
 
         <exec_method type="method"
             name="stop"
-            exec=":kill"
+            exec="/opt/smartdc/electric-moray/bin/quiesce.sh"
             timeout_seconds="30" />
 
         <property_group name="application" type="application" />
