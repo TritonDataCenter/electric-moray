@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (c) 2017, Joyent, Inc.
+ * Copyright (c) 2018, Joyent, Inc.
  */
 
 /*
@@ -22,46 +22,10 @@ if (require.cache[__dirname + '/helper.js'])
     delete require.cache[__dirname + '/helper.js'];
 var helper = require('./helper.js');
 
-
-
-///--- Globals
-
 var after = helper.after;
 var before = helper.before;
 var test = helper.test;
 
-var FULL_CFG = {
-    index: {
-        str: {
-            type: 'string'
-        },
-        str_u: {
-            type: 'string',
-            unique: true
-        },
-        num: {
-            type: 'number'
-        },
-        num_u: {
-            type: 'number',
-            unique: true
-        },
-        bool: {
-            type: 'boolean'
-        },
-        bool_u: {
-            type: 'boolean',
-            unique: true
-        }
-    },
-    pre: [function onePre(req, cb) { cb(); }],
-    post: [function onePost(req, cb) { cb(); }],
-    options: {}
-};
-
-
-
-///--- Helpers
 
 function assertBucket(name, t, bucket, cfg) {
     t.ok(bucket);
@@ -87,9 +51,6 @@ function assertBucket(name, t, bucket, cfg) {
     return (undefined);
 }
 
-
-
-///--- tests
 
 before(function (cb) {
     this.bucket = 'moray_unit_test_' + uuid.v4().substr(0, 7);
