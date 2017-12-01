@@ -24,6 +24,21 @@
             "createIfMissing": false,
             "keyEncoding": "utf8",
             "valueEncoding": "json"
-        }
+        },
+        {{! This formatting is necessary to communicate the structure of our
+        indexShards JSON object.  For mustache, our templating engine (and
+        hogan.js, which is mustache for javascript), we have to put the comma in
+        an inverted section, surrounding it with "last" flags, which is a field
+        we use to indicate that mustache/hogan.js should not render a trailing
+        comma, which JSON disallows.}}
+        "indexShards": [ {{#INDEX_MORAY_SHARDS}}
+            {
+                "host": "{{host}}"{{#readOnly}},
+                {{! The readOnly field should have a value of true, or else it
+                should not be included in the object.  Its value is manipulated
+                via manta-shardadm.}}
+                "readOnly": {{readOnly}}{{/readOnly}}
+            }{{^last}},{{/last}}{{/INDEX_MORAY_SHARDS}}
+        ]
     }
 }

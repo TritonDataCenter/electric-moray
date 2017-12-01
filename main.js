@@ -5,26 +5,20 @@
  */
 
 /*
- * Copyright (c) 2016, Joyent, Inc.
+ * Copyright (c) 2018, Joyent, Inc.
  */
-
-var fs = require('fs');
-var os = require('os');
 
 var assert = require('assert-plus');
 var bsyslog = require('bunyan-syslog');
 var bunyan = require('bunyan');
 var clone = require('clone');
+var fs = require('fs');
 var jsprim = require('jsprim');
 var getopt = require('posix-getopt');
 var VError = require('verror');
 var extend = require('xtend');
 
 var app = require('./lib');
-
-
-
-///--- Globals
 
 var MIN_PORT = 1;
 var MAX_PORT = 65535;
@@ -33,6 +27,7 @@ var DEFAULTS = {
     file: process.cwd() + '/etc/config.json',
     port: 2020,
     monitorPort: 3020,
+    statusPort: 4020,
     bindip: '0.0.0.0'
 };
 var NAME = 'electric-moray';
@@ -49,9 +44,6 @@ var LOG = bunyan.createLogger({
 });
 var LOG_LEVEL_OVERRIDE = false;
 
-
-
-///--- Internal Functions
 
 function setupLogger(config) {
     var cfg_b = config.bunyan;
@@ -111,7 +103,7 @@ function parsePort(str) {
 function parseOptions() {
     var option;
     var opts = {};
-    var parser = new getopt.BasicParser('cvf:r:p:k:', process.argv);
+    var parser = new getopt.BasicParser('cvf:r:p:k:s:', process.argv);
 
     while ((option = parser.getopt()) !== undefined) {
         switch (option.option) {
@@ -129,6 +121,9 @@ function parseOptions() {
                 break;
             case 'k':
                 opts.monitorPort = parsePort(option.optarg);
+                break;
+            case 's':
+                opts.statusPort = parsePort(option.optarg);
                 break;
             case 'v':
                 // Allows us to set -vvv -> this little hackery just ensures
@@ -181,12 +176,31 @@ function run(options) {
     opts.log = LOG;
     opts.name = NAME;
 
-    app.createServer(opts);
+    app.createServer(opts, function (err, res) {
+        if (err) {
+            LOG.fatal(err, 'startup failed');
+            process.exit(1);
+        }
+
+        assert.object(res, 'res');
+        assert.object(res.ring, 'res.ring');
+        assert.arrayOfString(res.clientList, 'res.clientList');
+
+        app.createStatusServer({
+            log: LOG.child({ component: 'statusServer' }),
+            ring: res.ring,
+            clientList: res.clientList,
+            indexShards: opts.ringCfg.indexShards,
+            port: opts.statusPort
+        }, function (err2) {
+            if (err2) {
+                LOG.fatal(err2, 'status server startup failed');
+                process.exit(1);
+            }
+        });
+    });
 }
 
-
-
-///--- Mainline
 
 (function main() {
     var options = parseOptions();
