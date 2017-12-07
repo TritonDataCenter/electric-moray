@@ -1,5 +1,4 @@
 #!/bin/bash
-# -*- mode: shell-script; fill-column: 80; -*-
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,10 +6,12 @@
 #
 
 #
-# Copyright (c) 2014, Joyent, Inc.
+# Copyright (c) 2017, Joyent, Inc.
 #
 
-# Boostraps the consistent hash ring for electric-moray.
+#
+# Bootstraps the consistent hash ring for electric-moray.
+#
 
 set -o xtrace
 set -o errexit
@@ -36,13 +37,40 @@ LEVELDB_DIR=$LEVELDB_DIR_PARENT/leveldb-
 SAPI_URL=$(mdata-get SAPI_URL)
 [[ -n $SAPI_URL ]] || fatal "no SAPI_URL found"
 sleep 10 # wait 10 seconds for dns to setup, this is so lame but otherwise will resolve in dns resolution errors.
-MANTA_APPLICATION=$(curl --connect-timeout 10 -sS -i -H accept:application/json \
-    -H content-type:application/json --url "$SAPI_URL/applications?name=manta&include_master=true" | json -Ha)
-[[ -n $MANTA_APPLICATION ]] || fatal "no MANTA_APPLICATION found"
-HASH_RING_IMAGE=$(echo $MANTA_APPLICATION | json metadata.HASH_RING_IMAGE)
+
+#
+# Load the Manta Application object from SAPI.  If this request fails, it will
+# be retried until the smf(5) method timeout expires for the "mdata:execute"
+# service.
+#
+while :; do
+    if ! sapi_res=$(curl --max-time 60 --ipv4 -sSf \
+      -H 'Accept: application/json' -H 'Content-Type: application/json' \
+      "$SAPI_URL/applications?name=manta&include_master=true"); then
+        printf 'WARNING: could not download SAPI application (retrying)\n' >&2
+        sleep 2
+        continue
+    fi
+
+    if ! napps=$(json length <<< "$sapi_res") || [[ $napps != '1' ]]; then
+        printf 'WARNING: found "%s" SAPI applications (retry)\n' "$napps" >&2
+        sleep 2
+        continue
+    fi
+
+    if ! manta_app=$(json 0 <<< "$sapi_res") || [[ -z $manta_app ]]; then
+        printf 'WARNING: failed to parse "manta" SAPI application (retry)\n' >&2
+        sleep 2
+        continue
+    fi
+
+    break
+done
+
+HASH_RING_IMAGE=$(json metadata.HASH_RING_IMAGE <<< "$manta_app")
 [[ -n $HASH_RING_IMAGE ]] || fatal "no HASH_RING_IMAGE found"
 HASH_RING_FILE=/var/tmp/$(uuid -v4).tar.gz
-export SDC_IMGADM_URL=$(echo $MANTA_APPLICATION | json metadata.HASH_RING_IMGAPI_SERVICE)
+export SDC_IMGADM_URL=$(json metadata.HASH_RING_IMGAPI_SERVICE <<< "$manta_app")
 [[ -n $SDC_IMGADM_URL ]] || fatal "no SDC_IMGADM_URL found"
 ZONE_UUID=$(/usr/bin/zonename)
 ZFS_PARENT_DATASET=zones/$ZONE_UUID/data
