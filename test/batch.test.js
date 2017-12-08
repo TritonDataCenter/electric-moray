@@ -441,12 +441,6 @@ test('same key transforms to different values', function (t) {
 });
 
 
-test('bad requests array: empty array', function (t) {
-    runBadBatch(this.client, t, [],
-        'must specify an array with at least one request');
-});
-
-
 test('unsupported batch operation: "update"', function (t) {
     var key = path.join('/', uuid.v4(), 'stor', uuid.v4());
     var requests = [
