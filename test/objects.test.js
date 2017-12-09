@@ -17,6 +17,12 @@ if (require.cache[__dirname + '/helper.js'])
 var helper = require('./helper.js');
 
 
+/*
+ * This test should be exercised by passing the electric-moray server a hash
+ * ring which contains a single vnode ("0") using the -r flag, in addition to
+ * testing a more standard ring.  Instructions for how to create a new hash ring
+ * for testing can be found in the node-fash project's create documentation.
+ */
 
 ///--- Globals
 
@@ -82,9 +88,6 @@ function assertObject(b, t, obj, k, v) {
     t.ok(obj._id);
     t.ok(obj._etag);
     t.ok(obj._mtime);
-    if (v.vnode) {
-        t.ok(obj.value.vnode);
-    }
     return (undefined);
 }
 

@@ -39,9 +39,6 @@ function assertObject(b, t, obj, k, v) {
     t.ok(obj._id);
     t.ok(obj._etag);
     t.ok(obj._mtime);
-    if (v.vnode) {
-        t.ok(obj.value.vnode);
-    }
     return (undefined);
 }
 
