@@ -143,9 +143,11 @@ function manta_setup_electric_moray {
     #Build the list of ports.  That'll be used for everything else.
     local ports
     local kangs
+    local statuses
     for (( i=1; i<=$ELECTRIC_MORAY_INSTANCES; i++ )); do
         ports[$i]=`expr 2020 + $i`
         kangs[$i]=`expr 3020 + $i`
+        statuses[$i]=`expr 4020 + $i`
     done
 
     #Regenerate the registrar config with the real ports included
@@ -184,10 +186,12 @@ function manta_setup_electric_moray {
     for (( i=1; i<=$ELECTRIC_MORAY_INSTANCES; i++ )); do
         local port=${ports[$i]}
         local kang=${kangs[$i]}
+        local status=${statuses[$i]}
         local electric_moray_instance="electric-moray-$port"
         local electric_moray_xml_out=$SVC_ROOT/smf/manifests/electric-moray-$port.xml
         sed -e "s#@@ELECTRIC-MORAY_PORT@@#$port#g" \
             -e "s#@@KANG_PORT@@#$kang#g" \
+            -e "s#@@STATUS_PORT@@#$status#g" \
             -e "s#@@ELECTRIC-MORAY_INSTANCE_NAME@@#$electric_moray_instance#g" \
             $electric_moray_xml_in  > $electric_moray_xml_out || \
             fatal "could not process $electric_moray_xml_in to $electric_moray_xml_out"
