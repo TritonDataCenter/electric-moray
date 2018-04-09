@@ -40,5 +40,7 @@
                 "readOnly": {{readOnly}}{{/readOnly}}
             }{{^last}},{{/last}}{{/INDEX_MORAY_SHARDS}}
         ]
-    }
+    },
+    "server_uuid": "{{auto.SERVER_UUID}}",
+    "datacenter": "{{DATACENTER}}"
 }
