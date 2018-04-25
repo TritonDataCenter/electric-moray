@@ -27,8 +27,8 @@ NODEUNIT_TESTS =	$(notdir $(wildcard test/*.test.js))
 
 
 NODE_PREBUILT_VERSION =	v0.10.48
-# Allow emoray builds on a VM other than sdc-multiarch/13.3.1.
-NODE_PREBUILT_IMAGE =	b4bdc598-8939-11e3-bea4-8341f6861379
+# Allow building on a SmartOS image other than sdc-*-multiarch 15.4.1.
+NODE_PREBUILT_IMAGE	= 18b094b0-eb01-11e5-80c1-175dac7ddf02
 ifeq ($(shell uname -s),SunOS)
 	NODE_PREBUILT_TAG =	zone64
 endif
