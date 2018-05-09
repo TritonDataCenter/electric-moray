@@ -14,6 +14,7 @@
         "bunyan": "0.22.1",
         "bunyan-syslog": "0.2.2",
         "clone": "0.1.9",
+	"crc": "3.5.0",
         "dtrace-provider": "0.2.8",
         "fash": "2.5.0",
         "fast": "2.3.2",
