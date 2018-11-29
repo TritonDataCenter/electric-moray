@@ -18,7 +18,7 @@ var getopt = require('posix-getopt');
 var VError = require('verror');
 var extend = require('xtend');
 
-var app = require('./lib');
+var appj = require('./lib');
 
 var MIN_PORT = 1;
 var MAX_PORT = 65535;
@@ -176,19 +176,28 @@ function run(options) {
     opts.log = LOG;
     opts.name = NAME;
 
-    app.createServer(opts, function (err, res) {
+    app.createBucketServer(opts, function (err, res) {
         if (err) {
             LOG.fatal(err, 'startup failed');
             process.exit(1);
         }
 
         assert.object(res, 'res');
-        assert.object(res.ring, 'res.ring');
+        // assert.object(res.ring, 'res.ring');
         assert.arrayOfString(res.clientList, 'res.clientList');
 
-        app.createStatusServer({
+        // LOG.info('Serializing ring!');
+        // res.ring.chash_.serialize(function (err, strring) {
+        //     if (err) {
+        //         throw new verror.VError(err, 'unable to serialize hash ring');
+        //     }
+        //     LOG.info('Serialized ring: ' + strring);
+        //     return;
+        // });
+
+        app.createBucketStatusServer({
             log: LOG.child({ component: 'statusServer' }),
-            ring: res.ring,
+            dataDirector: res.dataDirector,
             clientList: res.clientList,
             indexShards: opts.ringCfg.indexShards,
             port: opts.statusPort
