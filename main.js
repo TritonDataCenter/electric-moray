@@ -18,7 +18,7 @@ var getopt = require('posix-getopt');
 var VError = require('verror');
 var extend = require('xtend');
 
-var appj = require('./lib');
+var app = require('./lib');
 
 var MIN_PORT = 1;
 var MAX_PORT = 65535;
