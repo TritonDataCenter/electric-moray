@@ -22,7 +22,7 @@
         "kang": "1.2.0",
         "ldapjs": "0.6.3",
         "imgapi-cli": "git+https://github.com/joyent/sdc-imgapi-cli.git#db3efc1",
-        "moray": "^3.4.0",
+        "moray": "git+https://github.com/joyent/node-moray.git#buckets-demo",
         "node-uuid": "1.4.0",
         "posix-getopt": "^1.0.0",
         "restify": "6.3.1",
