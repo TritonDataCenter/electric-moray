@@ -1,7 +1,7 @@
 {
     "name": "electric-moray",
     "description": "moray proxy service",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "author": "Joyent (joyent.com)",
     "private": true,
     "repository": {
@@ -20,7 +20,7 @@
         "jsprim": "2.0.0",
         "kang": "1.2.0",
         "ldapjs": "0.6.3",
-        "imgapi-cli": "git+https://github.com/joyent/sdc-imgapi-cli.git#db3efc1",
+        "imgapi-cli": "git+https://github.com/joyent/sdc-imgapi-cli.git#v2.4.1",
         "moray": "^3.4.0",
         "node-uuid": "1.4.0",
         "posix-getopt": "^1.0.0",
