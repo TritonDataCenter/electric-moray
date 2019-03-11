@@ -1,7 +1,8 @@
-/node_modules
 /make_stamps
+/node_modules
 /tmp
-build
+/bits
+/build
 docs/*.json
 docs/*.html
 cscope.in.out
@@ -9,3 +10,5 @@ cscope.po.out
 cscope.out
 smf/manifests/*.xml
 sapi_manifests/registrar/template
+make_stamps
+electric-moray-pkg*.gz

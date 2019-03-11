@@ -5,12 +5,14 @@
 #
 
 #
-# Copyright (c) 2017, Joyent, Inc.
+# Copyright (c) 2019, Joyent, Inc.
 #
 
 #
 # Makefile: Electric Moray, a system for sharded Moray buckets
 #
+
+NAME = electric-moray
 
 #
 # Files
@@ -25,30 +27,40 @@ BOOTSTRAP_MANIFESTS =	sapi_manifests/registrar/template
 
 NODEUNIT_TESTS =	$(notdir $(wildcard test/*.test.js))
 
-
 NODE_PREBUILT_VERSION =	v0.10.48
-# Allow building on a SmartOS image other than sdc-*-multiarch 15.4.1.
+# sdc-*-multiarch 15.4.1.
 NODE_PREBUILT_IMAGE	= 18b094b0-eb01-11e5-80c1-175dac7ddf02
 ifeq ($(shell uname -s),SunOS)
 	NODE_PREBUILT_TAG =	zone64
 endif
 
-include ./tools/mk/Makefile.defs
+ENGBLD_USE_BUILDIMAGE =	true
+ENGBLD_REQUIRE := 	$(shell git submodule update --init deps/eng)
+include ./deps/eng/tools/mk/Makefile.defs
+TOP ?= $(error Unable to access eng.git submodule Makefiles.)
+
 ifeq ($(shell uname -s),SunOS)
-	include ./tools/mk/Makefile.node_prebuilt.defs
+	include ./deps/eng/tools/mk/Makefile.node_prebuilt.defs
+	include ./deps/eng/tools/mk/Makefile.agent_prebuilt.defs
 else
-	include ./tools/mk/Makefile.node.defs
+	include ./deps/eng/tools/mk/Makefile.node.defs
 endif
-include ./tools/mk/Makefile.node_modules.defs
-include ./tools/mk/Makefile.smf.defs
+include ./deps/eng/tools/mk/Makefile.node_modules.defs
+include ./deps/eng/tools/mk/Makefile.smf.defs
 
 #
 # MG Variables
 #
 
-RELEASE_TARBALL :=	electric-moray-pkg-$(STAMP).tar.bz2
+RELEASE_TARBALL :=	$(NAME)-pkg-$(STAMP).tar.gz
 ROOT :=			$(shell pwd)
-RELSTAGEDIR :=		/tmp/$(STAMP)
+RELSTAGEDIR :=		/tmp/$(NAME)-$(STAMP)
+
+BASE_IMAGE_UUID = 04a48d7d-6bb5-4e83-8c3b-e60a99e0f48f
+BUILDIMAGE_NAME = manta-electric-moray
+BUILDIMAGE_DESC	= Manta moray proxy
+BUILDIMAGE_PKGSRC = haproxy-1.6.2
+AGENTS		= amon config registrar
 
 #
 # Repo-specific targets
@@ -96,7 +108,7 @@ release: all
 	chmod 755 $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/boot/setup.sh
 	cp $(ROOT)/etc/haproxy.cfg.in \
 	    $(RELSTAGEDIR)/root/opt/smartdc/electric-moray/etc
-	(cd $(RELSTAGEDIR) && $(TAR) -jcf $(ROOT)/$(RELEASE_TARBALL) root)
+	(cd $(RELSTAGEDIR) && $(TAR) -I pigz -cf $(ROOT)/$(RELEASE_TARBALL) root)
 	@rm -rf $(RELSTAGEDIR)
 
 # We include a pre-substituted copy of the template in our built image so that
@@ -109,20 +121,17 @@ sapi_manifests/registrar/template: sapi_manifests/registrar/template.in
 
 .PHONY: publish
 publish: release
-	@if [[ -z "$(BITS_DIR)" ]]; then \
-		@echo "error: 'BITS_DIR' must be set for 'publish' target"; \
-		exit 1; \
-	fi
-	mkdir -p $(BITS_DIR)/electric-moray
+	mkdir -p $(ENGBLD_BITS_DIR)/electric-moray
 	cp $(ROOT)/$(RELEASE_TARBALL) \
-	    $(BITS_DIR)/electric-moray/$(RELEASE_TARBALL)
+	    $(ENGBLD_BITS_DIR)/$(NAME)/$(RELEASE_TARBALL)
 
-include ./tools/mk/Makefile.deps
+include ./deps/eng/tools/mk/Makefile.deps
 ifeq ($(shell uname -s),SunOS)
-	include ./tools/mk/Makefile.node_prebuilt.targ
+	include ./deps/eng/tools/mk/Makefile.node_prebuilt.targ
+	include ./deps/eng/tools/mk/Makefile.agent_prebuilt.targ
 else
-	include ./tools/mk/Makefile.node.targ
+	include ./deps/eng/tools/mk/Makefile.node.targ
 endif
-include ./tools/mk/Makefile.node_modules.targ
-include ./tools/mk/Makefile.smf.targ
-include ./tools/mk/Makefile.targ
+include ./deps/eng/tools/mk/Makefile.node_modules.targ
+include ./deps/eng/tools/mk/Makefile.smf.targ
+include ./deps/eng/tools/mk/Makefile.targ
