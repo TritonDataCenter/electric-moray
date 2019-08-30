@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (c) 2017, Joyent, Inc.
+ * Copyright 2019 Joyent, Inc.
  */
 
 var path = require('path');
@@ -63,7 +63,6 @@ var BUCKET_CFG = {
         cb();
     }],
     options: {
-        trackModification: true,
         guaranteeOrder: true
     }
 };
