@@ -58,7 +58,7 @@ ROOT :=			$(shell pwd)
 RELSTAGEDIR :=		/tmp/$(NAME)-$(STAMP)
 
 BASE_IMAGE_UUID = 04a48d7d-6bb5-4e83-8c3b-e60a99e0f48f
-BUILDIMAGE_NAME = mantav1-electric-moray
+BUILDIMAGE_NAME = mantav2-electric-moray
 BUILDIMAGE_DESC	= Manta moray proxy
 BUILDIMAGE_PKGSRC = haproxy-1.6.2
 AGENTS		= amon config registrar
