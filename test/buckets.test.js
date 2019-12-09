@@ -5,11 +5,11 @@
  */
 
 /*
- * Copyright (c) 2014, Joyent, Inc.
+ * Copyright 2019 Joyent, Inc.
  */
 
 var clone = require('clone');
-var uuid = require('node-uuid');
+var uuidv4 = require('uuid/v4');
 
 if (require.cache[__dirname + '/helper.js'])
     delete require.cache[__dirname + '/helper.js'];
@@ -85,7 +85,7 @@ function assertBucket(name, t, bucket, cfg) {
 ///--- tests
 
 before(function (cb) {
-    this.bucket = 'moray_unit_test_' + uuid.v4().substr(0, 7);
+    this.bucket = 'moray_unit_test_' + uuidv4().substr(0, 7);
     this.assertBucket = assertBucket.bind(null, this.bucket);
 
     this.client = helper.createClient();
@@ -326,7 +326,7 @@ test('create bucket triggers not function', function (t) {
 
 test('get bucket 404', function (t) {
     var c = this.client;
-    c.getBucket(uuid.v4().substr(0, 7), function (err) {
+    c.getBucket(uuidv4().substr(0, 7), function (err) {
         t.ok(err);
         t.equal(err.name, 'BucketNotFoundError');
         t.ok(err.message);

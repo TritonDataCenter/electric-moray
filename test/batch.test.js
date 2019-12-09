@@ -9,7 +9,7 @@
  */
 
 var path = require('path');
-var uuid = require('node-uuid');
+var uuidv4 = require('uuid/v4');
 var vasync = require('vasync');
 var VError = require('verror');
 
@@ -188,7 +188,7 @@ test('single operation: "put"', function (t) {
         {
             operation: 'put',
             bucket: self.bucket1,
-            key: path.join('/', uuid.v4(), 'stor', uuid.v4()),
+            key: path.join('/', uuidv4(), 'stor', uuidv4()),
             value: {
                 foo: 'bar'
             }
@@ -224,12 +224,12 @@ test('single operation: "put"', function (t) {
 test('single operation: "delete"', function (t) {
     var c = this.client;
     var self = this;
-    var prefixdir = path.join('/', uuid.v4(), 'stor');
+    var prefixdir = path.join('/', uuidv4(), 'stor');
     var requests = [
         {
             operation: 'delete',
             bucket: self.bucket1,
-            key: path.join(prefixdir, uuid.v4())
+            key: path.join(prefixdir, uuidv4())
         }
     ];
 
@@ -272,18 +272,18 @@ test('single operation: "delete"', function (t) {
 test('keys in batch transform to same value (1 bucket)', function (t) {
     var c = this.client;
     var self = this;
-    var prefixdir = path.join('/', uuid.v4(), 'stor');
+    var prefixdir = path.join('/', uuidv4(), 'stor');
     var requests = [
         {
             bucket: self.bucket1,
-            key: path.join(prefixdir, uuid.v4()),
+            key: path.join(prefixdir, uuidv4()),
             value: {
                 foo: 'bar'
             }
         },
         {
             bucket: self.bucket1,
-            key: path.join(prefixdir, uuid.v4()),
+            key: path.join(prefixdir, uuidv4()),
             value: {
                 bar: 'baz'
             }
@@ -333,11 +333,11 @@ test('keys in batch transform to same value (1 bucket)', function (t) {
 test('keys in batch transform to same value (2 buckets)', function (t) {
     var c = this.client;
     var self = this;
-    var prefixdir = path.join('/', uuid.v4(), 'stor');
+    var prefixdir = path.join('/', uuidv4(), 'stor');
     var requests = [
         {
             bucket: self.bucket1,
-            key: path.join(prefixdir, uuid.v4()),
+            key: path.join(prefixdir, uuidv4()),
             value: {
                 foo: 'bar'
             }
@@ -392,19 +392,19 @@ test('keys in batch transform to same value (2 buckets)', function (t) {
 
 
 test('keys in batch transform to different value', function (t) {
-    var prefixdir1 = path.join('/', uuid.v4(), 'stor');
-    var prefixdir2 = path.join('/', uuid.v4(), 'stor');
+    var prefixdir1 = path.join('/', uuidv4(), 'stor');
+    var prefixdir2 = path.join('/', uuidv4(), 'stor');
     var requests = [
         {
             bucket: this.bucket1,
-            key: path.join(prefixdir1, uuid.v4()),
+            key: path.join(prefixdir1, uuidv4()),
             value: {
                 foo: 'bar'
             }
         },
         {
             bucket: this.bucket1,
-            key: path.join(prefixdir2, uuid.v4()),
+            key: path.join(prefixdir2, uuidv4()),
             value: {
                 bar: 'baz'
             }
@@ -417,7 +417,7 @@ test('keys in batch transform to different value', function (t) {
 
 
 test('same key transforms to different values', function (t) {
-    var key = path.join('/', uuid.v4(), 'stor', uuid.v4());
+    var key = path.join('/', uuidv4(), 'stor', uuidv4());
     var requests = [
         {
             bucket: this.bucket1,
@@ -441,7 +441,7 @@ test('same key transforms to different values', function (t) {
 
 
 test('unsupported batch operation: "update"', function (t) {
-    var key = path.join('/', uuid.v4(), 'stor', uuid.v4());
+    var key = path.join('/', uuidv4(), 'stor', uuidv4());
     var requests = [
         {
             bucket: this.bucket1,
@@ -464,7 +464,7 @@ test('unsupported batch operation: "update"', function (t) {
 
 
 test('unsupported batch operation: "deleteMany"', function (t) {
-    var key = path.join('/', uuid.v4(), 'stor', uuid.v4());
+    var key = path.join('/', uuidv4(), 'stor', uuidv4());
     var requests = [
         {
             bucket: this.bucket1,
@@ -488,16 +488,16 @@ test('unsupported batch operation: "deleteMany"', function (t) {
 test('mix of all valid operations', function (t) {
     var c = this.client;
     var self = this;
-    var prefixdir = path.join('/', uuid.v4(), 'stor', uuid.v4());
+    var prefixdir = path.join('/', uuidv4(), 'stor', uuidv4());
     var requests = [
         {
             operation: 'delete',
             bucket: self.bucket1,
-            key: path.join(prefixdir, uuid.v4())
+            key: path.join(prefixdir, uuidv4())
         },
         {
             bucket: self.bucket1,
-            key: path.join(prefixdir, uuid.v4()),
+            key: path.join(prefixdir, uuidv4()),
             value: {
                 foo: 'bar'
             }

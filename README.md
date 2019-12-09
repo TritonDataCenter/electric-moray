@@ -84,3 +84,32 @@ above.  Then, run the test suite:
     $ make test
 
 This assumes that an electric-moray server is running on localhost port 2020.
+
+# Logging
+
+Each electric-moray process (`node main.js ...`) logs to stderr. That means
+this log output goes to the SMF service's log file:
+
+    svcs -L electric-moray
+
+By default it logs at the bunyan "info" level. The level is set via the
+`bunyan.level` key in the config file (see [the config file
+template](./sapi_manifests/electric-moray/template)). As an override, one
+can specify the `-v` option to `node main.js ...` to get "trace" level logging.
+
+In a small Manta there will just be one electric-moray process. In a large
+Manta there will be multiple (currently 4) processes in each electric-moray
+zone.
+
+To watch electric-moray logs use:
+
+    tail -f `svcs -L electric-moray` | bunyan
+
+To watch trace-level logs for an already running electric-moray:
+
+    bunyan -p $PID
+
+Logs are rotated and uploaded hourly via a cronjob. They are uploaded to
+the local Manta at:
+
+    /poseidon/stor/logs/electric-moray/YYYY/MM/DD/HH/$zonePrefix.$port.log

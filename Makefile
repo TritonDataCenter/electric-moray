@@ -28,12 +28,10 @@ BOOTSTRAP_MANIFESTS =	sapi_manifests/registrar/template
 
 NODEUNIT_TESTS =	$(notdir $(wildcard test/*.test.js))
 
-NODE_PREBUILT_VERSION =	v0.10.48
-# sdc-*-multiarch 15.4.1.
-NODE_PREBUILT_IMAGE	= 18b094b0-eb01-11e5-80c1-175dac7ddf02
-ifeq ($(shell uname -s),SunOS)
-	NODE_PREBUILT_TAG =	zone64
-endif
+NODE_PREBUILT_VERSION=v6.17.0
+# minimal-64-lts 18.4.0
+NODE_PREBUILT_IMAGE=c2c31b00-1d60-11e9-9a77-ff9f06554b0f
+NODE_PREBUILT_TAG=zone64
 
 ENGBLD_USE_BUILDIMAGE =	true
 ENGBLD_REQUIRE := 	$(shell git submodule update --init deps/eng)
@@ -44,7 +42,10 @@ ifeq ($(shell uname -s),SunOS)
 	include ./deps/eng/tools/mk/Makefile.node_prebuilt.defs
 	include ./deps/eng/tools/mk/Makefile.agent_prebuilt.defs
 else
-	include ./deps/eng/tools/mk/Makefile.node.defs
+	NPM=npm
+	NODE=node
+	NPM_EXEC=$(shell which npm)
+	NODE_EXEC=$(shell which node)
 endif
 include ./deps/eng/tools/mk/Makefile.node_modules.defs
 include ./deps/eng/tools/mk/Makefile.smf.defs
@@ -57,7 +58,8 @@ RELEASE_TARBALL :=	$(NAME)-pkg-$(STAMP).tar.gz
 ROOT :=			$(shell pwd)
 RELSTAGEDIR :=		/tmp/$(NAME)-$(STAMP)
 
-BASE_IMAGE_UUID = 04a48d7d-6bb5-4e83-8c3b-e60a99e0f48f
+# triton-origin-x86_64-18.4.0
+BASE_IMAGE_UUID = a9368831-958e-432d-a031-f8ce6768d190
 BUILDIMAGE_NAME = mantav2-electric-moray
 BUILDIMAGE_DESC	= Manta moray proxy
 BUILDIMAGE_PKGSRC = haproxy-1.6.2
@@ -130,8 +132,6 @@ include ./deps/eng/tools/mk/Makefile.deps
 ifeq ($(shell uname -s),SunOS)
 	include ./deps/eng/tools/mk/Makefile.node_prebuilt.targ
 	include ./deps/eng/tools/mk/Makefile.agent_prebuilt.targ
-else
-	include ./deps/eng/tools/mk/Makefile.node.targ
 endif
 include ./deps/eng/tools/mk/Makefile.node_modules.targ
 include ./deps/eng/tools/mk/Makefile.smf.targ

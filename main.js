@@ -5,11 +5,14 @@
  */
 
 /*
- * Copyright (c) 2018, Joyent, Inc.
+ * Copyright 2019 Joyent, Inc.
+ */
+
+/*
+ * The entry point for the electric-moray service.
  */
 
 var assert = require('assert-plus');
-var bsyslog = require('bunyan-syslog');
 var bunyan = require('bunyan');
 var clone = require('clone');
 var fs = require('fs');
@@ -31,53 +34,25 @@ var DEFAULTS = {
     bindip: '0.0.0.0'
 };
 var NAME = 'electric-moray';
-var LOG_SERIALIZERS = {
-    err: bunyan.stdSerializers.err
-};
-// We'll replace this with the syslog later, if applicable
 var LOG = bunyan.createLogger({
     name: NAME,
-    level: (process.env.LOG_LEVEL || 'info'),
-    src: true,
+    level: 'info',
     stream: process.stderr,
-    serializers: LOG_SERIALIZERS
-});
-var LOG_LEVEL_OVERRIDE = false;
-
-
-function setupLogger(config) {
-    var cfg_b = config.bunyan;
-    assert.object(cfg_b, 'config.bunyan');
-    assert.optionalString(cfg_b.level, 'config.bunyan.level');
-    assert.optionalObject(cfg_b.syslog, 'config.bunyan.syslog');
-
-    var level = LOG.level();
-
-    if (cfg_b.syslog && !LOG_LEVEL_OVERRIDE) {
-        assert.string(cfg_b.syslog.facility, 'config.bunyan.syslog.facility');
-        assert.string(cfg_b.syslog.type, 'config.bunyan.syslog.type');
-
-        var facility = bsyslog.facility[cfg_b.syslog.facility];
-        LOG = bunyan.createLogger({
-            name: NAME,
-            serializers: LOG_SERIALIZERS,
-            streams: [ {
-                level: level,
-                type: 'raw',
-                stream: bsyslog.createBunyanStream({
-                    name: NAME,
-                    facility: facility,
-                    host: cfg_b.syslog.host,
-                    port: cfg_b.syslog.port,
-                    type: cfg_b.syslog.type
-                })
-            } ]
-        });
+    serializers: {
+        err: bunyan.stdSerializers.err
     }
+});
 
-    if (cfg_b.level && !LOG_LEVEL_OVERRIDE) {
-        if (bunyan.resolveLevel(cfg_b.level))
-            LOG.level(cfg_b.level);
+
+function setupLogger(config, options) {
+    assert.object(config.bunyan, 'config.bunyan');
+    assert.optionalString(config.bunyan.level, 'config.bunyan.level');
+    assert.object(options, 'options');
+
+    if (options.verbose) {
+        LOG = LOG.child({level: 'trace', src: true});
+    } else if (config.bunyan.level) {
+        LOG.level(config.bunyan.level);
     }
 }
 
@@ -126,12 +101,7 @@ function parseOptions() {
                 opts.statusPort = parsePort(option.optarg);
                 break;
             case 'v':
-                // Allows us to set -vvv -> this little hackery just ensures
-                // that we're never < TRACE
-                LOG_LEVEL_OVERRIDE = true;
-                LOG.level(Math.max(bunyan.TRACE, (LOG.level() - 10)));
-                if (LOG.level() <= bunyan.DEBUG)
-                    LOG = LOG.child({src: true});
+                opts.verbose = true;
                 break;
             default:
                 process.exit(1);
@@ -206,12 +176,12 @@ function run(options) {
     var options = parseOptions();
     var config = readConfig(options);
 
+    setupLogger(config, options);
     LOG.debug({
         config: config,
         options: options
     }, 'main: options and config parsed');
 
-    setupLogger(config);
     run(config);
 
     if (options.cover) {

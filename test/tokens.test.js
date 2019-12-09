@@ -5,11 +5,11 @@
  */
 
 /*
- * Copyright (c) 2014, Joyent, Inc.
+ * Copyright 2019 Joyent, Inc.
  */
 
 var clone = require('clone');
-var uuid = require('node-uuid');
+var uuidv4 = require('uuid/v4');
 var vasync = require('vasync');
 
 if (require.cache[__dirname + '/helper.js'])
@@ -45,7 +45,7 @@ function assertObject(b, t, obj, k, v) {
 ///--- Tests
 
 before(function (cb) {
-    //this.bucket = 'moray_unit_test_' + uuid.v4().substr(0, 7);
+    //this.bucket = 'moray_unit_test_' + uuidv4().substr(0, 7);
     this.bucket = 'manta';
     this.assertObject = assertObject.bind(this, this.bucket);
     this.client = helper.createClient();
