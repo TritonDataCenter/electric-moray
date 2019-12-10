@@ -16,7 +16,7 @@
  */
 
 var clone = require('clone');
-var uuidv4 = require('uuidv4');
+var uuidv4 = require('uuid/v4');
 
 if (require.cache[__dirname + '/helper.js'])
     delete require.cache[__dirname + '/helper.js'];
