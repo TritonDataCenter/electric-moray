@@ -1,10 +1,6 @@
 {
     "bunyan": {
-        "level": "info",
-        "syslog": {
-            "facility": "local0",
-            "type": "udp"
-        }
+        "level": "info"
     },
     "fast": {
       {{#MORAY_FAST_CLIENT_CRC_MODE}}

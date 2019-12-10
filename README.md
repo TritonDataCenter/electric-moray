@@ -30,7 +30,8 @@ details on major Manta versions.
 - [`mantav1`](../../tree/mantav1/) - For development of mantav1, the long
   term support maintenance version of Manta.
 
-# Building and running
+
+## Building and running
 
 To run your own electric-moray from a copy of this repository, you'll want:
 
@@ -48,9 +49,7 @@ The easiest way to obtain a working configuration file and hash ring
 configuration is to copy them from one of the electric-moray zones in your
 existing Manta deployment:
 
-* configuration file: /opt/smartdc/electric-moray/etc/config.json.  **For local
-  development, it's recommended that you remove the "syslog" block from the
-  configuration file so that logs are emitted to stderr rather than syslog.**
+* configuration file: /opt/smartdc/electric-moray/etc/config.json.
 * hash ring: /electric-moray/chash/leveldb-2021
 
 In a single-server deployment (as is typically used for testing), you can use
@@ -76,7 +75,7 @@ electric-moray workspace, you'd use:
     $ node ./main.js -f ./config.json -r ./leveldb-2021 -p 2020 2>&1 | bunyan
 
 
-# Testing
+## Testing
 
 First, make sure you're running a local copy of electric-moray as described
 above.  Then, run the test suite:
@@ -84,3 +83,32 @@ above.  Then, run the test suite:
     $ make test
 
 This assumes that an electric-moray server is running on localhost port 2020.
+
+## Logging
+
+Each electric-moray process (`node main.js ...`) logs to stderr. That means
+this log output goes to the SMF service's log file:
+
+    svcs -L electric-moray
+
+By default it logs at the bunyan "info" level. The level is set via the
+`bunyan.level` key in the config file (see [the config file
+template](./sapi_manifests/electric-moray/template)). As an override, one
+can specify the `-v` option to `node main.js ...` to get "trace" level logging.
+
+In a small Manta there will just be one electric-moray process. In a large
+Manta there will be multiple (currently 4) processes in each electric-moray
+zone.
+
+To watch electric-moray logs use:
+
+    tail -f `svcs -L electric-moray` | bunyan
+
+To watch trace-level logs for an already running electric-moray:
+
+    bunyan -p $PID
+
+Logs are rotated and uploaded hourly via a cronjob. They are uploaded to
+the local Manta at:
+
+    /poseidon/stor/logs/electric-moray/YYYY/MM/DD/HH/$zonePrefix.$port.log

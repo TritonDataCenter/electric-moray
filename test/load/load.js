@@ -5,13 +5,13 @@
  */
 
 /*
- * Copyright (c) 2014, Joyent, Inc.
+ * Copyright 2019 Joyent, Inc.
  */
 
 var assert = require('assert-plus');
 var bunyan = require('bunyan');
 var moray = require('moray');
-var uuid = require('node-uuid');
+var uuidv4 = require('uuid/v4');
 
 
 
@@ -43,10 +43,10 @@ var SCHEMA = {
 ///--- Runners
 
 function put(i, cb) {
-        var k = uuid.v4().substr(0, 7);
+        var k = uuidv4().substr(0, 7);
         var v = {
-                foo: uuid.v1(),
-                bar: uuid.v1()
+                foo: uuidv4(),
+                bar: uuidv4()
         };
         CLIENT.putObject(BNAME, k, v, function (put_err, meta) {
                 if (put_err) {

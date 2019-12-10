@@ -1,7 +1,7 @@
 {
     "name": "electric-moray",
-    "description": "moray proxy service",
-    "version": "1.0.4",
+    "description": "Manta directory API Moray proxy service",
+    "version": "1.1.0",
     "author": "Joyent (joyent.com)",
     "private": true,
     "repository": {
@@ -11,27 +11,24 @@
     "dependencies": {
         "artedi": "1.1.0",
         "assert-plus": "1.0.0",
-        "bunyan": "0.22.1",
-        "bunyan-syslog": "0.2.2",
-        "clone": "0.1.9",
-        "dtrace-provider": "0.2.8",
-        "fash": "2.5.0",
+        "bunyan": "1.8.12",
+        "dtrace-provider": "0.8.8",
+        "fash": "3.0.0",
         "fast": "2.8.1",
         "jsprim": "2.0.0",
-        "kang": "1.2.0",
-        "ldapjs": "0.6.3",
+        "kang": "1.3.0",
         "imgapi-cli": "git+https://github.com/joyent/sdc-imgapi-cli.git#v2.4.1",
         "moray": "3.7.0",
-        "node-uuid": "1.4.0",
         "posix-getopt": "^1.0.0",
         "restify": "6.3.1",
         "strsplit": "1.0.0",
-        "vasync": "^1.4.3",
-        "verror": "1.9.0",
+        "uuid": "3.3.3",
+        "vasync": "2.2.0",
+        "verror": "1.10.0",
         "xtend": "2.0.6"
     },
     "devDependencies": {
-        "deep-equal": "0.0.0",
+        "deep-equal": "1.1.1",
         "nodeunit": "0.9.1"
     },
     "sdcDependencies": {

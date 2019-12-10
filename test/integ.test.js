@@ -5,10 +5,10 @@
  */
 
 /*
- * Copyright (c) 2014, Joyent, Inc.
+ * Copyright 2019 Joyent, Inc.
  */
 
-var uuid = require('node-uuid');
+var uuidv4 = require('uuid/v4');
 
 if (require.cache[__dirname + '/helper.js'])
         delete require.cache[__dirname + '/helper.js'];
@@ -32,7 +32,7 @@ var test = helper.test;
 ///--- Tests
 
 before(function (cb) {
-        this.bucket = 'moray_unit_test_' + uuid.v4().substr(0, 7);
+        this.bucket = 'moray_unit_test_' + uuidv4().substr(0, 7);
 
         this.client = helper.createClient();
         this.client.on('connect', cb);
@@ -52,7 +52,7 @@ after(function (cb) {
 test('MANTA-117 single quotes not being escaped', function (t) {
         var b = this.bucket;
         var c = this.client;
-        var k = uuid();
+        var k = uuidv4();
         var cfg = {
                 index: {
                         name: {
@@ -62,7 +62,7 @@ test('MANTA-117 single quotes not being escaped', function (t) {
                 }
         };
         var data = {
-                name: uuid(),
+                name: uuidv4(),
                 chain: [ {
                         name: 'A Task',
                         timeout: 30,
@@ -100,7 +100,7 @@ test('MANTA-117 single quotes not being escaped', function (t) {
 test('MANTA-328 numeric values in filters', function (t) {
         var b = this.bucket;
         var c = this.client;
-        var k = uuid();
+        var k = uuidv4();
         var cfg = {
                 index: {
                         num: {
@@ -144,7 +144,7 @@ test('MANTA-328 numeric values in filters', function (t) {
 test('MANTA-328 numeric values in filters <=', function (t) {
         var b = this.bucket;
         var c = this.client;
-        var k = uuid();
+        var k = uuidv4();
         var cfg = {
                 index: {
                         num: {
@@ -189,7 +189,7 @@ test('MANTA-328 numeric values in filters <=', function (t) {
 test('MANTA-328 numeric values in filters >=', function (t) {
         var b = this.bucket;
         var c = this.client;
-        var k = uuid();
+        var k = uuidv4();
         var cfg = {
                 index: {
                         num: {
@@ -234,7 +234,7 @@ test('MANTA-328 numeric values in filters >=', function (t) {
 test('MANTA-170 bogus filter', function (t) {
         var b = this.bucket;
         var c = this.client;
-        var k = uuid();
+        var k = uuidv4();
         var cfg = {
                 index: {
                         num: {
@@ -267,7 +267,7 @@ test('MANTA-170 bogus filter', function (t) {
 test('MANTA-680 boolean searches', function (t) {
         var b = this.bucket;
         var c = this.client;
-        var k = uuid();
+        var k = uuidv4();
         var cfg = {
                 index: {
                         b: {

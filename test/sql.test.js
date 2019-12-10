@@ -5,10 +5,10 @@
  */
 
 /*
- * Copyright (c) 2014, Joyent, Inc.
+ * Copyright 2019 Joyent, Inc.
  */
 
-var uuid = require('node-uuid');
+var uuidv4 = require('uuid/v4');
 
 if (require.cache[__dirname + '/helper.js'])
         delete require.cache[__dirname + '/helper.js'];
@@ -29,7 +29,7 @@ var table = makeid();
 ///--- Tests
 
 before(function (cb) {
-        this.bucket = 'moray_unit_test_' + uuid.v4().substr(0, 7);
+        this.bucket = 'moray_unit_test_' + uuidv4().substr(0, 7);
 
         this.client = helper.createClient();
         this.client.on('connect', cb);
