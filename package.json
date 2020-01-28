@@ -16,7 +16,7 @@
         "clone": "0.1.9",
         "dtrace-provider": "0.2.8",
         "fash": "2.5.0",
-        "fast": "2.8.1",
+        "fast": "3.0.0",
         "jsprim": "2.0.0",
         "kang": "1.2.0",
         "ldapjs": "0.6.3",
