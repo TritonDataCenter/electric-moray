@@ -2,20 +2,6 @@
     "bunyan": {
         "level": "info"
     },
-    "fast": {
-      {{#MORAY_FAST_CLIENT_CRC_MODE}}
-      "client_crc_mode": {{MORAY_FAST_CLIENT_CRC_MODE}},
-      {{/MORAY_FAST_CLIENT_CRC_MODE}}
-      {{^MORAY_FAST_CLIENT_CRC_MODE}}
-      "client_crc_mode": 1,
-      {{/MORAY_FAST_CLIENT_CRC_MODE}}
-      {{#MORAY_FAST_SERVER_CRC_MODE}}
-      "server_crc_mode": {{MORAY_FAST_SERVER_CRC_MODE}}
-      {{/MORAY_FAST_SERVER_CRC_MODE}}
-      {{^MORAY_FAST_SERVER_CRC_MODE}}
-      "server_crc_mode": 2
-      {{/MORAY_FAST_SERVER_CRC_MODE}}
-    },
     "numWorkers": 0,
     "audit": false,
     "cache": {
