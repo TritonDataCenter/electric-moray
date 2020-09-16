@@ -12,7 +12,7 @@
 # Makefile: Electric Moray, a system for sharded Moray buckets
 #
 
-NAME = electric-moray
+NAME = timf-moray
 
 #
 # Files
@@ -60,8 +60,8 @@ RELSTAGEDIR :=		/tmp/$(NAME)-$(STAMP)
 
 # triton-origin-x86_64-18.4.0
 BASE_IMAGE_UUID = a9368831-958e-432d-a031-f8ce6768d190
-BUILDIMAGE_NAME = mantav2-electric-moray
-BUILDIMAGE_DESC	= Manta moray proxy
+BUILDIMAGE_NAME = mantav2-timf-moray
+BUILDIMAGE_DESC	= Timf hacked Manta moray proxy
 BUILDIMAGE_PKGSRC = haproxy-2.0.12
 AGENTS		= amon config registrar
 
