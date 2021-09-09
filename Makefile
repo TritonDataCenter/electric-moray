@@ -5,7 +5,7 @@
 #
 
 #
-# Copyright 2020 Joyent, Inc.
+# Copyright 2021 Joyent, Inc.
 #
 
 #
@@ -62,7 +62,7 @@ RELSTAGEDIR :=		/tmp/$(NAME)-$(STAMP)
 BASE_IMAGE_UUID = a9368831-958e-432d-a031-f8ce6768d190
 BUILDIMAGE_NAME = mantav2-electric-moray
 BUILDIMAGE_DESC	= Manta moray proxy
-BUILDIMAGE_PKGSRC = haproxy-2.0.12
+BUILDIMAGE_PKGSRC = haproxy-2.0.25
 AGENTS		= amon config registrar
 
 #
