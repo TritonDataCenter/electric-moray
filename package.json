@@ -1,15 +1,15 @@
 {
     "name": "electric-moray",
     "description": "Manta directory API Moray proxy service",
-    "version": "1.2.1",
-    "author": "Joyent (joyent.com)",
+    "version": "1.2.2",
+    "author": "MNX Cloud (mnx.io)",
     "private": true,
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/joyent/electric-moray.git"
+        "url": "git+https://github.com/TritonDataCenter/electric-moray.git"
     },
     "dependencies": {
-        "artedi": "1.1.0",
+        "artedi": "1.4.1",
         "assert-plus": "1.0.0",
         "bunyan": "1.8.12",
         "dtrace-provider": "0.8.8",
@@ -17,7 +17,7 @@
         "fast": "3.1.3",
         "jsprim": "2.0.2",
         "kang": "1.3.0",
-        "imgapi-cli": "git+https://github.com/joyent/sdc-imgapi-cli.git#v2.5.0",
+        "imgapi-cli": "git+https://github.com/TritonDataCenter/sdc-imgapi-cli.git#v2.6.0",
         "moray": "3.8.1",
         "posix-getopt": "^1.0.0",
         "restify": "6.3.1",
@@ -29,7 +29,7 @@
     },
     "devDependencies": {
         "deep-equal": "1.1.1",
-        "nodeunit": "0.9.1"
+        "nodeunit": "0.9.5"
     },
     "sdcDependencies": {
         "config-agent": ">=1.2.0"
