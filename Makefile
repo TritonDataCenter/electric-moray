@@ -6,6 +6,7 @@
 
 #
 # Copyright 2021 Joyent, Inc.
+# Copyright 2024 MNX Cloud, Inc.
 #
 
 #
@@ -17,7 +18,7 @@ NAME = electric-moray
 #
 # Files
 #
-DOC_FILES =	 	index.md
+DOC_FILES =		index.md
 JS_FILES :=		$(wildcard *.js) $(shell find lib test -name '*.js')
 JSL_CONF_NODE =		tools/jsl.node.conf
 JSL_FILES_NODE =	$(JS_FILES)
@@ -28,13 +29,13 @@ BOOTSTRAP_MANIFESTS =	sapi_manifests/registrar/template
 
 NODEUNIT_TESTS =	$(notdir $(wildcard test/*.test.js))
 
-NODE_PREBUILT_VERSION=v6.17.0
-# minimal-64-lts 18.4.0
-NODE_PREBUILT_IMAGE=c2c31b00-1d60-11e9-9a77-ff9f06554b0f
+NODE_PREBUILT_VERSION=v6.17.1
+# minimal-64-lts 19.4.0
+NODE_PREBUILT_IMAGE=5417ab20-3156-11ea-8b19-2b66f5e7a439
 NODE_PREBUILT_TAG=zone64
 
 ENGBLD_USE_BUILDIMAGE =	true
-ENGBLD_REQUIRE := 	$(shell git submodule update --init deps/eng)
+ENGBLD_REQUIRE :=	$(shell git submodule update --init deps/eng)
 include ./deps/eng/tools/mk/Makefile.defs
 TOP ?= $(error Unable to access eng.git submodule Makefiles.)
 
@@ -58,8 +59,8 @@ RELEASE_TARBALL :=	$(NAME)-pkg-$(STAMP).tar.gz
 ROOT :=			$(shell pwd)
 RELSTAGEDIR :=		/tmp/$(NAME)-$(STAMP)
 
-# triton-origin-x86_64-18.4.0
-BASE_IMAGE_UUID = a9368831-958e-432d-a031-f8ce6768d190
+# triton-origin-x86_64-19.4.0
+BASE_IMAGE_UUID = 59ba2e5e-976f-4e09-8aac-a4a7ef0395f5
 BUILDIMAGE_NAME = mantav2-electric-moray
 BUILDIMAGE_DESC	= Manta moray proxy
 BUILDIMAGE_PKGSRC = haproxy-2.0.25
